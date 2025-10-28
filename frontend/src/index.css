@@ -1,73 +1,103 @@
 :root {
-	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-	line-height: 1.5;
-	font-weight: 400;
-
-	color-scheme: light dark;
-	color: rgba(255, 255, 255, 0.87);
-	background-color: #242424;
-
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	--bg-color: #0a0a0f;
+	/* near-black */
+	--panel-bg: #12121a;
+	/* sidebar/settings background */
+	--chat-bg: #14141f;
+	/* chat window background */
+	--text-color: #e0e0f0;
+	--accent-color: #d8b4ff;
+	/* lily */
+	--input-bg: #1c1c28;
+	--input-border: #2a2a3b;
+	--border-color: #2c2c40;
+	--shadow-color: rgba(0, 0, 0, 0.5);
 }
 
-a {
-	font-weight: 500;
-	color: #646cff;
-	text-decoration: inherit;
-}
-
-a:hover {
-	color: #535bf2;
+/* Global reset */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
 body {
-	margin: 0;
-	display: flex;
-	place-items: center;
+	font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+	background-color: var(--bg-color);
+	color: var(--text-color);
 	min-width: 320px;
 	min-height: 100vh;
 }
 
-h1 {
-	font-size: 3.2em;
-	line-height: 1.1;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: var(--text-color);
+	font-weight: 600;
+}
+
+a {
+	font-weight: 500;
+	color: var(--accent-color);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
 }
 
 button {
-	border-radius: 8px;
+	border-radius: 12px;
 	border: 1px solid transparent;
 	padding: 0.6em 1.2em;
 	font-size: 1em;
 	font-weight: 500;
 	font-family: inherit;
-	background-color: #1a1a1a;
+	background-color: var(--accent-color);
+	color: var(--bg-color);
 	cursor: pointer;
-	transition: border-color 0.25s;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 button:hover {
-	border-color: #646cff;
+	background-color: #c299ff;
+	/* deeper lily */
+	transform: translateY(-1px);
+	box-shadow: 0 6px 14px var(--shadow-color);
 }
 
-button:focus,
-button:focus-visible {
-	outline: 4px auto -webkit-focus-ring-color;
+input,
+select {
+	border-radius: 8px;
+	border: 1px solid var(--input-border);
+	background-color: var(--input-bg);
+	color: var(--text-color);
+	padding: 0.6rem;
+	font-size: 0.95rem;
+	outline: none;
+	transition: border-color 0.25s;
 }
 
-@media (prefers-color-scheme: light) {
-	:root {
-		color: #213547;
-		background-color: #ffffff;
-	}
+input:focus,
+select:focus {
+	border-color: var(--accent-color);
+}
 
-	a:hover {
-		color: #747bff;
-	}
+::-webkit-scrollbar {
+	width: 8px;
+}
 
-	button {
-		background-color: #f9f9f9;
-	}
+::-webkit-scrollbar-track {
+	background: var(--panel-bg);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--accent-color);
+	border-radius: 4px;
 }

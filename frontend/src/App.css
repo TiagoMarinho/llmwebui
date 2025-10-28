@@ -1,111 +1,92 @@
-/* Global reset */
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-}
-
-/* Layout container */
 .app {
 	display: flex;
 	height: 100vh;
 	width: 100vw;
-	/* ensures full viewport width */
-	font-family: sans-serif;
 }
 
 /* Sidebars */
 .sidebar,
 .settings {
 	width: 20%;
-	/* or fixed pixel width if preferred */
-	max-width: 250px;
-	/* prevents it from taking too much space */
+	max-width: 280px;
 	flex-shrink: 0;
-	/* never shrink */
-	padding: 1rem;
+	padding: 1.5rem;
 	overflow-y: auto;
-	border: 1px solid #ccc;
-	background-color: #f9f9f9;
+	background-color: var(--panel-bg);
+	border-right: 1px solid var(--border-color);
 }
 
 /* Center chat window */
 .chat-window {
 	flex: 1;
-	/* fills remaining space */
-	min-width: 0;
-	/* allows shrinking properly */
 	display: flex;
 	flex-direction: column;
-	padding: 1rem;
-	background-color: #fff;
-	border-left: 1px solid #ccc;
-	border-right: 1px solid #ccc;
+	background-color: var(--chat-bg);
+	padding: 1.5rem;
+	border-radius: 12px;
+	margin: 1rem;
 }
 
 /* Messages container */
 .messages {
 	flex: 1;
 	overflow-y: auto;
-	margin-bottom: 1rem;
 	display: flex;
 	flex-direction: column;
-	/* makes align-self work on children */ 
+	gap: 0.6rem;
+	margin-bottom: 1rem;
 }
 
 /* Chat bubbles */
 .bubble {
-	max-width: 60%;
-	padding: 0.5rem 1rem;
-	margin: 0.2rem 0;
-	border-radius: 1rem;
+	max-width: 65%;
+	padding: 0.8rem 1.2rem;
+	border-radius: 16px;
 	word-wrap: break-word;
+	line-height: 1.4;
 }
 
 .bubble.user {
-	background-color: #4caf50;
+	background-color: #6b4cff;
+	/* soft purple for user */
 	color: #fff;
 	align-self: flex-end;
 }
 
 .bubble.bot {
-	background-color: #eee;
-	color: #000;
+	background-color: #1c1c28;
+	color: var(--text-color);
 	align-self: flex-start;
+	border: 1px solid var(--accent-color);
 }
 
-/* Input box at bottom of chat */
+/* Input box */
 .input-box {
 	display: flex;
+	gap: 0.5rem;
 }
 
 .input-box input {
 	flex: 1;
-	padding: 0.5rem;
-	border: 1px solid #ccc;
-	border-radius: 0.25rem;
+	border-radius: 12px;
 }
 
 .input-box button {
-	padding: 0.5rem 1rem;
-	margin-left: 0.5rem;
-	border: none;
-	background-color: #4caf50;
-	color: #fff;
-	border-radius: 0.25rem;
-	cursor: pointer;
+	border-radius: 12px;
 }
 
-.input-box button:hover {
-	background-color: #45a049;
-}
-
-/* Sidebar content */
+/* Sidebar history */
 .history-item {
-	padding: 0.25rem 0;
-	border-bottom: 1px solid #ddd;
+	padding: 0.5rem 0.8rem;
+	border-bottom: 1px solid var(--border-color);
+	border-radius: 8px;
+	margin-bottom: 0.3rem;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.history-item:hover {
+	background-color: rgba(216, 180, 255, 0.1);
 }
 
 .history-empty {
@@ -113,42 +94,44 @@
 	font-style: italic;
 }
 
-/* Settings panel input */
-.settings input[type="number"] {
+/* Settings panel inputs */
+.settings input[type="number"],
+.settings select {
 	width: 100%;
-	padding: 0.25rem;
 	margin-top: 0.25rem;
 	margin-bottom: 0.5rem;
-	border: 1px solid #ccc;
-	border-radius: 0.25rem;
 }
 
+/* Character editor */
 .character-editor {
 	flex: 1;
-	/* take all available space (left + center) */
-	padding: 1rem;
+	padding: 1.5rem;
 	display: flex;
 	flex-direction: column;
+	border-radius: 12px;
 }
 
 .character-info {
 	flex: 1;
-	/* take remaining space */
-	border: 1px solid #ccc;
+	border: 1px solid var(--border-color);
 	margin-bottom: 1rem;
 	padding: 1rem;
-	background-color: #f5f5f5;
+	background-color: #16161f;
+	border-radius: 12px;
 }
 
 .back-button {
-	padding: 0.5rem 1rem;
+	padding: 0.6rem 1.2rem;
+	border-radius: 12px;
+	background-color: var(--accent-color);
+	color: var(--bg-color);
 	border: none;
-	border-radius: 0.25rem;
-	background-color: #4caf50;
-	color: #fff;
 	cursor: pointer;
+	font-weight: 500;
+	transition: all 0.25s ease;
 }
 
 .back-button:hover {
-	background-color: #45a049;
+	background-color: #c299ff;
+	transform: translateY(-1px);
 }
