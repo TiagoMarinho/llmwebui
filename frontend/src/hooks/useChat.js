@@ -9,7 +9,13 @@ export default function useChat() {
 	}, []);
 
 	const sendMessage = async (text, params, character) => {
-		// TODO: send message to API/LLM and update messages state
+		const res = await fetch('http://localhost:5000/api/chat/send', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ text, params, character }),
+		});
+		const data = await res.json();
+		setMessages(prev => [...prev, { role: 'user', text }, { role: 'bot', text: data.response }]);
 	};
 
 	return { messages, setMessages, history, sendMessage };
