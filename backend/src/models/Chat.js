@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 
-export default class Message extends Model {
+export default class Chat extends Model {
 	static init(sequelize) {
 		return super.init(
 			{
@@ -9,39 +9,29 @@ export default class Message extends Model {
 					autoIncrement: true,
 					primaryKey: true,
 				},
-				chatId: {
-					type: DataTypes.INTEGER,
+				title: {
+					type: DataTypes.STRING,
 					allowNull: false,
+					defaultValue: 'Untitled Chat',
 				},
 				character: {
 					type: DataTypes.STRING,
 					allowNull: false,
-				},
-				role: {
-					type: DataTypes.ENUM('user', 'assistant', 'system'),
-					allowNull: false,
-				},
-				text: {
-					type: DataTypes.TEXT,
-					allowNull: false,
-				},
-				metadata: {
-					type: DataTypes.JSON,
-					allowNull: true,
+					defaultValue: 'default',
 				},
 			},
 			{
 				sequelize,
-				modelName: 'Message',
-				tableName: 'messages',
+				modelName: 'Chat',
+				tableName: 'chats',
 				timestamps: true,
 			}
 		);
 	}
 
 	static associate(models) {
-		this.belongsTo(models.Chat, {
-			as: 'chat',
+		this.hasMany(models.Message, {
+			as: 'messages',
 			foreignKey: 'chatId',
 			onDelete: 'CASCADE',
 		});

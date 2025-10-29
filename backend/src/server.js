@@ -1,7 +1,6 @@
 // backend/src/server.js
 import app from './app.js';
 import sequelize from './db.js';
-import Message from './models/Message.js';
 
 const PORT = process.env.PORT || 5000;
 
