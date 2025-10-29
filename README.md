@@ -6,29 +6,31 @@ A React frontend skeleton for a chat interface with character selection and sett
 
 ## **Installation**
 
-Clone the repository:
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/TiagoMarinho/llmwebui
 cd llmwebui
 ```
 
-Install dependencies:
+### 2. Install dependencies
 
 ```bash
 npm run install
 ```
 
-Start the development server:
+### 3. Start the development server
 
+#### Windows:
 ```bash
 npm run dev:win
 ```
 
-or, if you're on Linux/macOS:
-
+#### Linux/macOS:
 ```bash
 npm run dev:unix
 ```
+
+### 4. Run the app in your browser
 
 Open your browser at `http://localhost:5173` (or the URL shown in your terminal).
