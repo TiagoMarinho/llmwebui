@@ -2,7 +2,9 @@
 	"name": "llmwebui",
 	"private": true,
 	"scripts": {
-		"dev": "start /B npm run dev:backend && npm run dev:frontend",
+		"install": "npm install --prefix backend & npm install --prefix frontend",
+		"dev:win": "start /B npm run dev:backend && npm run dev:frontend",
+		"dev:unix": "npm run dev:backend & npm run dev:frontend",
 		"dev:backend": "cd backend && node src/server.js",
 		"dev:frontend": "cd frontend && npm run dev",
 		"build": "cd frontend && npm run build",

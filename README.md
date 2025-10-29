@@ -16,13 +16,19 @@ cd llmwebui
 Install dependencies:
 
 ```bash
-npm install
+npm run install
 ```
 
 Start the development server:
 
 ```bash
-npm run dev
+npm run dev:win
+```
+
+or, if you're on Linux/macOS:
+
+```bash
+npm run dev:unix
 ```
 
 Open your browser at `http://localhost:5173` (or the URL shown in your terminal).
