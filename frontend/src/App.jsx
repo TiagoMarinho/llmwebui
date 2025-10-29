@@ -10,8 +10,6 @@ import useChat from "./hooks/useChat";
 import useCharacter from "./hooks/useCharacter";
 import useSettings from "./hooks/useSettings";
 
-import "./App.css";
-
 function ViewRouter({ view, map }) {
 	const View = map[view];
 	return View ? <View /> : null;
@@ -45,7 +43,7 @@ export default function App() {
 	};
 
 	return (
-		<div className="app">
+		<div className="flex h-screen w-screen">
 			<ViewRouter view={view} map={views} />
 
 			<SettingsPanel

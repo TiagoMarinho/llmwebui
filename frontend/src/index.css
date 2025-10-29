@@ -1,103 +1,74 @@
-:root {
-	--bg-color: #0a0a0f;
-	/* near-black */
-	--panel-bg: #12121a;
-	/* sidebar/settings background */
-	--chat-bg: #14141f;
-	/* chat window background */
-	--text-color: #e0e0f0;
-	--accent-color: #d8b4ff;
-	/* lily */
-	--input-bg: #1c1c28;
-	--input-border: #2a2a3b;
-	--border-color: #2c2c40;
-	--shadow-color: rgba(0, 0, 0, 0.5);
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0a0a0f;
+  --color-panel: #12121a;
+  --color-chat: #14141f;
+  --color-accent: #d8b4ff;
+  --color-input: #1c1c28;
+  --color-input-border: #2a2a3b;
+  --color-border: #2c2c40;
+  --shadow-custom: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-custom-hover: 0 6px 14px rgba(0, 0, 0, 0.5);
 }
 
-/* Global reset */
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+@layer base {
+  body {
+    @apply font-sans bg-bg text-[#e0e0f0] min-w-[320px] min-h-screen;
+  }
 }
 
-body {
-	font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
-	background-color: var(--bg-color);
-	color: var(--text-color);
-	min-width: 320px;
-	min-height: 100vh;
+@layer components {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-[#e0e0f0] font-semibold;
+  }
+
+  a {
+    @apply font-medium text-accent no-underline hover:underline;
+  }
+
+  button {
+    @apply rounded-xl border border-transparent px-5 py-2.5 text-base font-medium 
+           bg-accent text-bg cursor-pointer transition-all duration-300;
+    box-shadow: var(--shadow-custom);
+  }
+
+  button:hover {
+    @apply bg-[#c299ff] -translate-y-px;
+    box-shadow: var(--shadow-custom-hover);
+  }
+
+  input,
+  select {
+    @apply rounded-lg px-3 py-2.5 text-[0.95rem] outline-none transition-colors duration-250;
+    border: 1px solid var(--color-input-border);
+    background-color: var(--color-input);
+    color: var(--color-text);
+  }
+
+  input:focus,
+  select:focus {
+    border-color: var(--color-accent);
+  }
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	color: var(--text-color);
-	font-weight: 600;
-}
+@layer utilities {
+  /* Custom scrollbar styles */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
 
-a {
-	font-weight: 500;
-	color: var(--accent-color);
-	text-decoration: none;
-}
+  ::-webkit-scrollbar-track {
+    background-color: var(--color-panel);
+  }
 
-a:hover {
-	text-decoration: underline;
-}
-
-button {
-	border-radius: 12px;
-	border: 1px solid transparent;
-	padding: 0.6em 1.2em;
-	font-size: 1em;
-	font-weight: 500;
-	font-family: inherit;
-	background-color: var(--accent-color);
-	color: var(--bg-color);
-	cursor: pointer;
-	transition: all 0.3s ease;
-	box-shadow: 0 4px 12px var(--shadow-color);
-}
-
-button:hover {
-	background-color: #c299ff;
-	/* deeper lily */
-	transform: translateY(-1px);
-	box-shadow: 0 6px 14px var(--shadow-color);
-}
-
-input,
-select {
-	border-radius: 8px;
-	border: 1px solid var(--input-border);
-	background-color: var(--input-bg);
-	color: var(--text-color);
-	padding: 0.6rem;
-	font-size: 0.95rem;
-	outline: none;
-	transition: border-color 0.25s;
-}
-
-input:focus,
-select:focus {
-	border-color: var(--accent-color);
-}
-
-::-webkit-scrollbar {
-	width: 8px;
-}
-
-::-webkit-scrollbar-track {
-	background: var(--panel-bg);
-}
-
-::-webkit-scrollbar-thumb {
-	background: var(--accent-color);
-	border-radius: 4px;
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-accent);
+    border-radius: 0.25rem;
+  }
 }

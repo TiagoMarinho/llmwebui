@@ -11,14 +11,17 @@ export default function InputBox({ onSend }) {
 	};
 
 	return (
-		<form className="input-box" onSubmit={handleSubmit}>
+		<form className="flex gap-2" onSubmit={handleSubmit}>
 			<input
 				type="text"
 				value={text}
 				onChange={(e) => setText(e.target.value)}
 				placeholder="Type a message..."
+				className="flex-1 rounded-xl"
 			/>
-			<button type="submit">Send</button>
+			<button type="submit" className="rounded-xl">
+				Send
+			</button>
 		</form>
 	);
 }
