@@ -16,7 +16,7 @@ cd llmwebui
 ### 2. Install dependencies
 
 ```bash
-npm run install
+npm install
 ```
 
 ### 3. Start the development server

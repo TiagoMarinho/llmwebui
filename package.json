@@ -1,8 +1,11 @@
 {
 	"name": "llmwebui",
 	"private": true,
+	"workspaces": [
+		"backend",
+		"frontend"
+	],
 	"scripts": {
-		"install": "npm install --prefix backend & npm install --prefix frontend",
 		"dev:win": "start /B npm run dev:backend && npm run dev:frontend",
 		"dev:unix": "npm run dev:backend & npm run dev:frontend",
 		"dev:backend": "cd backend && node src/server.js",
