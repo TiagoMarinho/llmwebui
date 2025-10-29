@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { ROLE } from '../../../shared/role.js'
 
 export default function useChat() {
 	const [messages, setMessages] = useState([]);
@@ -15,7 +16,7 @@ export default function useChat() {
 			body: JSON.stringify({ text, params, character }),
 		});
 		const data = await res.json();
-		setMessages(prev => [...prev, { role: 'user', text }, { role: 'assistant', text: data.response }]);
+		setMessages(prev => [...prev, { role: ROLE.USER, text }, { role: ROLE.ASSISTANT, text: data.response }]);
 	};
 
 	return { messages, setMessages, history, sendMessage };

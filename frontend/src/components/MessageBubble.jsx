@@ -1,5 +1,7 @@
+import { ROLE } from "../../../shared/role";
+
 export default function MessageBubble({ message }) {
-	const alignClass = message.role === "user" ? "bubble user" : "bubble bot";
+	const alignClass = message.role === ROLE.USER ? "bubble user" : "bubble bot";
 
 	return (
 		<div className={alignClass}>
