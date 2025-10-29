@@ -9,13 +9,13 @@ export default function useChat() {
 	}, []);
 
 	const sendMessage = async (text, params, character) => {
-		const res = await fetch('http://localhost:5000/api/chat/send', {
+		const res = await fetch('/api/v1/chat/messages', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ text, params, character }),
 		});
 		const data = await res.json();
-		setMessages(prev => [...prev, { role: 'user', text }, { role: 'bot', text: data.response }]);
+		setMessages(prev => [...prev, { role: 'user', text }, { role: 'assistant', text: data.response }]);
 	};
 
 	return { messages, setMessages, history, sendMessage };
