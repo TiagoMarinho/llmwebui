@@ -58,11 +58,12 @@ export default class Message extends Model {
 		);
 	}
 
-	static associate(models) {
+	// COMMENTED OUT UNTIL CHATS ARE IMPLEMENTED
+	/*static associate(models) {
 		this.belongsTo(models.Chat, {
 			as: 'chat',
 			foreignKey: 'chatId',
 			onDelete: 'CASCADE',
 		});
-	}
+	}*/
 }

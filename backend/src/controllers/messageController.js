@@ -1,31 +1,55 @@
-import Message from '../models/Message.js';
+import Message from "../models/Message.js";
+import llmService from "../services/llmService.js";
 
+export const getMessages = async (req, res) => {
+	try {
+		const { chatId } = req.params;
+		if (!chatId) return res.status(400).json({ error: "chatId is required" });
 
-export const getMessage = async (req, res) => {
-    try {
-        const { chatId } = req.query;
-        if (chatId == null) return res.json({ messages: [] });
-
-        const messages = await Message.findAll({ where: { chatId } });
-
-        res.json({ messages });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}
+		const messages = await Message.findAll({ where: { chatId } });
+		res.json({ messages });
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+};
 
 export const getMessageById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (id == null) return res.status(400).json({ error: 'Message ID is required' });
+	try {
+		const { chatId, id } = req.params;
+		if (!chatId) return res.status(400).json({ error: "chatId is required" });
 
-        const message = await Message.findByPk(id);
-        if (message == null) return res.status(404).json({ error: 'Message not found' });
+		const message = await Message.findOne({ where: { chatId, id } });
+		if (!message)
+			return res.status(404).json({ error: "Message not found" });
+		
+		res.json({ message });
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+};
 
-        res.json({ message });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}
+export const sendMessage = async (req, res) => {
+	try {
+		const { chatId } = req.params;
+		const { text, params, character } = req.body;
+		const userMessage = await Message.create({
+			text,
+			role: "user",
+			character,
+			chatId,
+		});
 
+		const llmResponse = await llmService.sendMessage(text, params, character);
 
+		await Message.create({
+			text: llmResponse.response,
+			role: "assistant",
+			character,
+			chatId,
+		});
+
+		res.json(llmResponse);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+	}
+};
