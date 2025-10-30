@@ -1,35 +1,78 @@
 import { useState, useEffect } from "react";
-import { ROLE } from '../../../shared/role.js'
+import { ROLE } from "../../../shared/role.js";
 
 export default function useChat() {
 	const [messages, setMessages] = useState([]);
 	const [history, setHistory] = useState([]);
-	const chatId = 1; // placeholder until chats are implemented
+	const [chatId, setChatId] = useState(null);
 
-	const getMessages = async () => {
-		const res = await fetch(`/api/v1/chats/${chatId}/messages`);
+	const loadChats = async () => {
+		try {
+			const res = await fetch("/api/v1/chats");
+			const data = await res.json();
+			const chats = data.chats || [];
+			setHistory(chats);
+	
+			if (!chats.length) {
+				// no chats exist, create default
+				const id = await createChat("Alice"); 
+				await loadMessages(id);
+				setChatId(id);
+				return;
+			}
+			
+			const latestChatId = chats[0].id;
+			await loadMessages(latestChatId);
+			setChatId(latestChatId);
+		} catch (err) {
+			console.error(err);
+		}
+	};	
+
+	const createChat = async (character = "default") => {
+		const res = await fetch("/api/v1/chats", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ title: "New Chat", character }),
+		});
 		const data = await res.json();
-		setMessages(data.messages);
+		setChatId(data.chat.id);
+		await loadChats();
+		setMessages([]);
+		return data.chat.id;
 	};
 
-	useEffect(() => {
-		getMessages();
-	}, []);
+	const loadMessages = async (id) => {
+		if (!id) return;
+		try {
+			const res = await fetch(`/api/v1/chats/${id}/messages`);
+			const data = await res.json();
+			setMessages(data.messages || []);
+			setChatId(id);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+	
 
 	const sendMessage = async (text, params, character) => {
+		if (!chatId) return;
 		const res = await fetch(`/api/v1/chats/${chatId}/messages`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ text, params, character }),
 		});
 		const data = await res.json();
-		setMessages(prev => [
+		setMessages((prev) => [
 			...prev,
 			{ role: ROLE.USER, text },
-			{ role: ROLE.ASSISTANT, text: data.response }
+			{ role: ROLE.ASSISTANT, text: data.response },
 		]);
 	};
 
+	useEffect(() => {
+		loadChats();
+	}, []);
 
-	return { messages, setMessages, history, sendMessage };
+	return { messages, history, chatId, createChat, loadMessages, sendMessage };
 }
