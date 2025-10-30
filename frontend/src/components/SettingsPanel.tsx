@@ -1,3 +1,14 @@
+import { Settings } from "../hooks/useSettings";
+
+interface SettingsPanelProps {
+	params: Settings;
+	setParams: (params: Settings) => void;
+	selectedCharacter: string;
+	setSelectedCharacter: (character: string) => void;
+	view: string;
+	setView: (view: string) => void;
+}
+
 export default function SettingsPanel({
 	params,
 	setParams,
@@ -5,10 +16,13 @@ export default function SettingsPanel({
 	setSelectedCharacter,
 	view,
 	setView,
-}) {
-	const handleChange = (e) =>
+}: SettingsPanelProps) {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setParams({ ...params, [e.target.name]: parseFloat(e.target.value) });
-	const handleCharacterChange = (e) => setSelectedCharacter(e.target.value);
+	};
+	const handleCharacterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setSelectedCharacter(e.target.value);
+	};
 
 	return (
 		<div className="w-[20%] max-w-[280px] shrink-0 p-6 overflow-y-auto bg-panel border-r border-border">

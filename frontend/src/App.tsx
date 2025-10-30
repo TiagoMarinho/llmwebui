@@ -10,7 +10,7 @@ import useChat from "./hooks/useChat";
 import useCharacter from "./hooks/useCharacter";
 import useSettings from "./hooks/useSettings";
 
-function ViewRouter({ view, map }) {
+function ViewRouter({ view, map }: { view: any; map: any }) {
 	const View = map[view];
 	return View ? <View /> : null;
 }
@@ -29,7 +29,9 @@ export default function App() {
 				<Sidebar history={history} />
 				<ChatWindow
 					messages={messages}
-					onSend={(text) => sendMessage(text, params, selectedCharacter)}
+					onSend={(text: string) =>
+						sendMessage(text, params, selectedCharacter)
+					}
 				/>
 			</>
 		),

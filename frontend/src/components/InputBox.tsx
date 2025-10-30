@@ -1,9 +1,13 @@
 import { useState } from "react";
 
-export default function InputBox({ onSend }) {
+export default function InputBox({
+	onSend,
+}: {
+	onSend: (text: string) => void;
+}) {
 	const [text, setText] = useState("");
 
-	const handleSubmit = (e) => {
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (!text.trim()) return;
 		onSend(text);

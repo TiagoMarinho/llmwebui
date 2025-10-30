@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { ROLE } from '../../../shared/role.js'
+import { ROLE } from "../../../shared/role.js";
+import { Message } from "../types/message";
 
 export default function useChat() {
-	const [messages, setMessages] = useState([]);
+	const [messages, setMessages] = useState<Message[]>([]);
 	const [history, setHistory] = useState([]);
 	const chatId = 1; // placeholder until chats are implemented
 
@@ -16,20 +17,19 @@ export default function useChat() {
 		getMessages();
 	}, []);
 
-	const sendMessage = async (text, params, character) => {
+	const sendMessage = async (text: string, params: any, character: string) => {
 		const res = await fetch(`/api/v1/chats/${chatId}/messages`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ text, params, character }),
 		});
 		const data = await res.json();
-		setMessages(prev => [
+		setMessages((prev) => [
 			...prev,
 			{ role: ROLE.USER, text },
-			{ role: ROLE.ASSISTANT, text: data.response }
+			{ role: ROLE.ASSISTANT, text: data.response },
 		]);
 	};
-
 
 	return { messages, setMessages, history, sendMessage };
 }

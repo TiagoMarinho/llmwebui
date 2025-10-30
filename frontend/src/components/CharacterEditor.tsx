@@ -1,4 +1,12 @@
-export default function CharacterEditor({ selectedCharacter, setView }) {
+export default function CharacterEditor({
+	selectedCharacter,
+	setView,
+	saveCharacter,
+}: {
+	selectedCharacter: string;
+	setView: (view: string) => void;
+	saveCharacter: (data: any) => void;
+}) {
 	return (
 		<div className="flex-1 p-6 flex flex-col rounded-xl">
 			<h1>Editing: {selectedCharacter}</h1>

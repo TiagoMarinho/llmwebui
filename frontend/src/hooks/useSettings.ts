@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 
+export interface Settings {
+	temperature: number;
+}
+
 export default function useSettings() {
 	const [params, setParams] = useState({ temperature: 0.7 });
 
