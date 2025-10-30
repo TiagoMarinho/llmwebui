@@ -23,11 +23,11 @@ export default class Message extends Model {
 					validate: {
 						notNull: { msg: 'Character is required' },
 						notEmpty: { msg: 'Character cannot be empty' },
+						len: {
+							args: [1, 255],
+							msg: 'Character must be between 1 and 255 characters',
+						}
 					},
-					len: {
-						args: [1, 255],
-						msg: 'Character must be between 1 and 255 characters',
-					}
 				},
 				role: {
 					type: DataTypes.ENUM('user', 'assistant', 'system'),
