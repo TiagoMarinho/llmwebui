@@ -1,9 +1,11 @@
+import { Chat } from "../types/chat";
+
 export default function Sidebar({
 	history = [],
 	onSelectChat,
 	onNewChat,
 }: {
-	history: any[];
+	history: Chat[];
 	onSelectChat: (id: number) => void;
 	onNewChat: () => void;
 }) {

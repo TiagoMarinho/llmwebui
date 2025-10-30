@@ -2,17 +2,18 @@ import { useState, useEffect } from "react";
 import { Message } from "../types/message";
 import { ROLE } from "../../../shared/role.js";
 import { Settings } from "./useSettings";
+import { Chat } from "../types/chat";
 
 export default function useChat() {
 	const [messages, setMessages] = useState<Message[]>([]);
-	const [history, setHistory] = useState<any[]>([]);
+	const [history, setHistory] = useState<Chat[]>([]);
 	const [chatId, setChatId] = useState<number | null>(null);
 
 	const loadChats = async () => {
 		try {
 			const res = await fetch("/api/v1/chats");
 			const data = await res.json();
-			const chats = data.chats || [];
+			const chats: Chat[] = data.chats || [];
 			setHistory(chats);
 
 			if (!chats.length) {
