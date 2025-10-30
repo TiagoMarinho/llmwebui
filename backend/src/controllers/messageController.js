@@ -1,4 +1,5 @@
 import Message from "../models/Message.js";
+import Chat from "../models/Chat.js";
 import llmService from "../services/llmService.js";
 
 export const getMessages = async (req, res) => {
@@ -38,6 +39,7 @@ export const sendMessage = async (req, res) => {
 			character,
 			chatId,
 		});
+		await Chat.update({}, { where: { id: chatId }, silent: false });
 
 		const llmResponse = await llmService.sendMessage(text, params, character);
 
