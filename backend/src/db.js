@@ -5,4 +5,5 @@ const sequelize = new Sequelize("sqlite:./database/database.sqlite", {
 	logging: false,
 });
 
+export { sequelize };
 export default sequelize;

@@ -29,11 +29,12 @@ export default class Chat extends Model {
 		);
 	}
 
-	static associate(models) {
+	// COMMENTED OUT UNTIL CHATS ARE IMPLEMENTED
+	/*static associate(models) {
 		this.hasMany(models.Message, {
 			as: 'messages',
 			foreignKey: 'chatId',
 			onDelete: 'CASCADE',
 		});
-	}
+	}*/
 }

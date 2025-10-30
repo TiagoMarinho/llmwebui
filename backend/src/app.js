@@ -1,10 +1,8 @@
-import express from 'express';
-import chatRoutes from './routes/chatRoutes.js';
+import express from "express";
+import messageRoutes from "./routes/messageRoutes.js";
 
 const app = express();
 app.use(express.json());
-
-// API routes
-app.use('/api/v1/chat', chatRoutes);
+app.use("/api/v1/chats", messageRoutes);
 
 export default app;
