@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, JSX } from "react";
 import { VIEW } from "./shared/view";
 
 import Sidebar from "./components/Sidebar";
@@ -10,7 +10,12 @@ import useChat from "./hooks/useChat";
 import useCharacter from "./hooks/useCharacter";
 import useSettings from "./hooks/useSettings";
 
-function ViewRouter({ view, map }: { view: any; map: any }) {
+type ViewComponent = () => JSX.Element;
+type ViewMap = {
+	[key: string]: ViewComponent;
+};
+
+function ViewRouter({ view, map }: { view: string; map: ViewMap }) {
 	const View = map[view];
 	return View ? <View /> : null;
 }
@@ -19,7 +24,8 @@ export default function App() {
 	const [selectedCharacter, setSelectedCharacter] = useState("Alice");
 	const [view, setView] = useState(VIEW.CHAT);
 
-	const { messages, history, chatId, createChat, loadMessages, sendMessage } = useChat();
+	const { messages, history, chatId, createChat, loadMessages, sendMessage } =
+		useChat();
 	const { characterData, saveCharacter } = useCharacter(selectedCharacter);
 	const { params, setParams } = useSettings();
 
