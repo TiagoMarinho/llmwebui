@@ -24,7 +24,7 @@ export default function App() {
 	const [selectedCharacter, setSelectedCharacter] = useState("Alice");
 	const [view, setView] = useState(VIEW.CHAT);
 
-	const { messages, history, chatId, createChat, loadMessages, sendMessage } =
+	const { messages, history, chatId, createChat, deleteChat, loadMessages, sendMessage } =
 		useChat();
 	const { characterData, saveCharacter } = useCharacter(selectedCharacter);
 	const { params, setParams } = useSettings();
@@ -36,6 +36,7 @@ export default function App() {
 					history={history}
 					onSelectChat={(id) => loadMessages(id)}
 					onNewChat={() => createChat(selectedCharacter)}
+					onDeleteChat={(id) => deleteChat(id)}
 				/>
 				<ChatWindow
 					messages={messages}

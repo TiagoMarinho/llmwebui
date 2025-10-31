@@ -4,10 +4,12 @@ export default function Sidebar({
 	history = [],
 	onSelectChat,
 	onNewChat,
+	onDeleteChat
 }: {
 	history: Chat[];
 	onSelectChat: (id: number) => void;
 	onNewChat: () => void;
+	onDeleteChat: (id: number) => void;
 }) {
 	return (
 		<div
@@ -21,7 +23,7 @@ export default function Sidebar({
 				<h2>History</h2>
 				<button
 					onClick={onNewChat}
-					className="px-3 py-1 text-sm rounded-lg bg-accent text-bg"
+					className="px-3 text-sm bg-accent text-bg"
 				>
 					New
 				</button>
@@ -32,10 +34,24 @@ export default function Sidebar({
 					<div
 						key={chat.id}
 						onClick={() => onSelectChat(chat.id)}
-						className="p-2 px-3 border-b border-border rounded-lg mb-1 cursor-pointer 
+						className="cursor-pointer flex justify-between items-center p-2 px-3 border-b border-border rounded-lg mb-1 
 								transition-colors duration-200 hover:bg-accent/10"
 					>
-						{chat.title}
+						<span
+							className="flex-1"
+						>
+							{chat.title}
+						</span>
+						<button
+							onClick={(e) => {
+								e.stopPropagation();  // prevent selecting the chat
+								onDeleteChat(chat.id);
+							}}
+							className="text-sm text-400 px-2"
+							title="Delete chat"
+						>
+							Delete
+						</button>
 					</div>
 				))
 			) : (
