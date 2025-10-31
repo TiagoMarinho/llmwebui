@@ -1,10 +1,12 @@
+import { VIEW } from '../shared/view'
+
 export default function CharacterEditor({
 	selectedCharacter,
 	setView,
 	saveCharacter,
 }: {
 	selectedCharacter: string;
-	setView: (view: string) => void;
+	setView: (view: VIEW) => void;
 	saveCharacter: (data: any) => void;
 }) {
 	return (
@@ -17,7 +19,7 @@ export default function CharacterEditor({
 			</div>
 
 			<button
-				onClick={() => setView("chat")}
+				onClick={() => setView(VIEW.CHAT)}
 				className="px-5 py-2.5 rounded-xl bg-accent text-bg border-none cursor-pointer 
 						font-medium transition-all duration-250 hover:bg-[#c299ff] hover:-translate-y-px"
 			>

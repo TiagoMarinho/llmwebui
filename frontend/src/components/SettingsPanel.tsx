@@ -1,4 +1,5 @@
 import { Settings } from "../hooks/useSettings";
+import { VIEW } from '../shared/view'
 
 interface SettingsPanelProps {
 	params: Settings;
@@ -6,7 +7,7 @@ interface SettingsPanelProps {
 	selectedCharacter: string;
 	setSelectedCharacter: (character: string) => void;
 	view: string;
-	setView: (view: string) => void;
+	setView: (view: VIEW) => void;
 }
 
 export default function SettingsPanel({
@@ -57,13 +58,13 @@ export default function SettingsPanel({
 
 			{view === "chat" ? (
 				<button
-					onClick={() => setView("characterEditor")}
+					onClick={() => setView(VIEW.CHARACTER_EDITOR)}
 					className="w-full mt-4"
 				>
 					Edit Character
 				</button>
 			) : (
-				<button onClick={() => setView("chat")} className="w-full mt-4">
+				<button onClick={() => setView(VIEW.CHAT)} className="w-full mt-4">
 					← Back to Chat
 				</button>
 			)}

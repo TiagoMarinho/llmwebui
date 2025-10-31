@@ -1,4 +1,4 @@
-export const VIEW = {
-	CHAT: "chat",
-	CHARACTER_EDITOR: "characterEditor",
+export enum VIEW {
+	CHAT = "chat",
+	CHARACTER_EDITOR = "characterEditor",
 }
