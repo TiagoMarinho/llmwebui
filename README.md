@@ -21,14 +21,8 @@ npm install
 
 ### 3. Start the development server
 
-#### Windows:
 ```bash
-npm run dev:win
-```
-
-#### Linux/macOS:
-```bash
-npm run dev:unix
+npm run dev
 ```
 
 ### 4. Run the app in your browser
