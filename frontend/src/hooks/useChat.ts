@@ -48,28 +48,30 @@ export default function useChat() {
 	const deleteChat = async (id: number) => {
 		try {
 			if (!id) return;
-	
+
 			const isDeletingCurrent = id === chatId;
-			const currentIndex = history.findIndex(c => c.id === id);
-	
+			const currentIndex = history.findIndex((c) => c.id === id);
+
 			await fetch(`/api/v1/chats/${id}`, { method: "DELETE" });
-	
-			const updatedHistory = history.filter(c => c.id !== id);
+
+			const updatedHistory = history.filter((c) => c.id !== id);
 			setHistory(updatedHistory);
 
-			if (!isDeletingCurrent) return
-	
+			if (!isDeletingCurrent) return;
+
 			if (updatedHistory.length === 0) {
 				await createChat("Alice");
 				return;
 			}
-	
-			const nextChat = updatedHistory[currentIndex] || updatedHistory[currentIndex - 1] || updatedHistory[0];
+
+			const nextChat =
+				updatedHistory[currentIndex] ||
+				updatedHistory[currentIndex - 1] ||
+				updatedHistory[0];
 			if (nextChat) {
 				setChatId(nextChat.id);
 				await loadMessages(nextChat.id);
 			}
-	
 		} catch (err) {
 			console.error("Failed to delete chat:", err);
 		}
@@ -90,7 +92,7 @@ export default function useChat() {
 	const sendMessage = async (
 		text: string,
 		params: Settings,
-		character: string
+		character: string,
 	) => {
 		if (!chatId) return;
 		const res = await fetch(`/api/v1/chats/${chatId}/messages`, {
@@ -110,5 +112,13 @@ export default function useChat() {
 		loadChats();
 	}, []);
 
-	return { messages, history, chatId, createChat, deleteChat, loadMessages, sendMessage };
+	return {
+		messages,
+		history,
+		chatId,
+		createChat,
+		deleteChat,
+		loadMessages,
+		sendMessage,
+	};
 }

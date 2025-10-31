@@ -1,74 +1,74 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0a0a0f;
-  --color-panel: #12121a;
-  --color-chat: #14141f;
-  --color-accent: #d8b4ff;
-  --color-input: #1c1c28;
-  --color-input-border: #2a2a3b;
-  --color-border: #2c2c40;
-  --shadow-custom: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-custom-hover: 0 6px 14px rgba(0, 0, 0, 0.5);
+	--color-bg: #0a0a0f;
+	--color-panel: #12121a;
+	--color-chat: #14141f;
+	--color-accent: #d8b4ff;
+	--color-input: #1c1c28;
+	--color-input-border: #2a2a3b;
+	--color-border: #2c2c40;
+	--shadow-custom: 0 4px 12px rgba(0, 0, 0, 0.5);
+	--shadow-custom-hover: 0 6px 14px rgba(0, 0, 0, 0.5);
 }
 
 @layer base {
-  body {
-    @apply font-sans bg-bg text-[#e0e0f0] min-w-[320px] min-h-screen;
-  }
+	body {
+		@apply font-sans bg-bg text-[#e0e0f0] min-w-[320px] min-h-screen;
+	}
 }
 
 @layer components {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply text-[#e0e0f0] font-semibold;
-  }
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		@apply text-[#e0e0f0] font-semibold;
+	}
 
-  a {
-    @apply font-medium text-accent no-underline hover:underline;
-  }
+	a {
+		@apply font-medium text-accent no-underline hover:underline;
+	}
 
-  button {
-    @apply rounded-xl border border-transparent px-5 py-2.5 text-base font-medium 
+	button {
+		@apply rounded-xl border border-transparent px-5 py-2.5 text-base font-medium 
            bg-accent text-bg cursor-pointer transition-all duration-300;
-    box-shadow: var(--shadow-custom);
-  }
+		box-shadow: var(--shadow-custom);
+	}
 
-  button:hover {
-    @apply bg-[#c299ff] -translate-y-px;
-    box-shadow: var(--shadow-custom-hover);
-  }
+	button:hover {
+		@apply bg-[#c299ff] -translate-y-px;
+		box-shadow: var(--shadow-custom-hover);
+	}
 
-  input,
-  select {
-    @apply rounded-lg px-3 py-2.5 text-[0.95rem] outline-none transition-colors duration-250;
-    border: 1px solid var(--color-input-border);
-    background-color: var(--color-input);
-    color: var(--color-text);
-  }
+	input,
+	select {
+		@apply rounded-lg px-3 py-2.5 text-[0.95rem] outline-none transition-colors duration-250;
+		border: 1px solid var(--color-input-border);
+		background-color: var(--color-input);
+		color: var(--color-text);
+	}
 
-  input:focus,
-  select:focus {
-    border-color: var(--color-accent);
-  }
+	input:focus,
+	select:focus {
+		border-color: var(--color-accent);
+	}
 }
 
 @layer utilities {
-  /* Custom scrollbar styles */
-  ::-webkit-scrollbar {
-    @apply w-2;
-  }
+	/* Custom scrollbar styles */
+	::-webkit-scrollbar {
+		@apply w-2;
+	}
 
-  ::-webkit-scrollbar-track {
-    background-color: var(--color-panel);
-  }
+	::-webkit-scrollbar-track {
+		background-color: var(--color-panel);
+	}
 
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--color-accent);
-    border-radius: 0.25rem;
-  }
+	::-webkit-scrollbar-thumb {
+		background-color: var(--color-accent);
+		border-radius: 0.25rem;
+	}
 }

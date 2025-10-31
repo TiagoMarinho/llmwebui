@@ -1,4 +1,4 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model } from "sequelize";
 
 export default class Message extends Model {
 	static init(sequelize) {
@@ -13,36 +13,36 @@ export default class Message extends Model {
 					type: DataTypes.INTEGER,
 					allowNull: false,
 					validate: {
-						notNull: { msg: 'Chat ID is required' },
-						notEmpty: { msg: 'Chat ID cannot be empty' },
-					}
+						notNull: { msg: "Chat ID is required" },
+						notEmpty: { msg: "Chat ID cannot be empty" },
+					},
 				},
 				character: {
 					type: DataTypes.STRING,
 					allowNull: false,
 					validate: {
-						notNull: { msg: 'Character is required' },
-						notEmpty: { msg: 'Character cannot be empty' },
+						notNull: { msg: "Character is required" },
+						notEmpty: { msg: "Character cannot be empty" },
 						len: {
 							args: [1, 255],
-							msg: 'Character must be between 1 and 255 characters',
-						}
+							msg: "Character must be between 1 and 255 characters",
+						},
 					},
 				},
 				role: {
-					type: DataTypes.ENUM('user', 'assistant', 'system'),
+					type: DataTypes.ENUM("user", "assistant", "system"),
 					allowNull: false,
 					validate: {
-						notNull: { msg: 'Role is required' },
-					}
+						notNull: { msg: "Role is required" },
+					},
 				},
 				text: {
 					type: DataTypes.TEXT,
 					allowNull: false,
 					validate: {
-						notNull: { msg: 'Text is required' },
-						notEmpty: { msg: 'Text cannot be empty' },
-					}
+						notNull: { msg: "Text is required" },
+						notEmpty: { msg: "Text cannot be empty" },
+					},
 				},
 				metadata: {
 					type: DataTypes.JSON,
@@ -51,18 +51,18 @@ export default class Message extends Model {
 			},
 			{
 				sequelize,
-				modelName: 'Message',
-				tableName: 'messages',
+				modelName: "Message",
+				tableName: "messages",
 				timestamps: true,
-			}
+			},
 		);
 	}
 
 	static associate(models) {
 		this.belongsTo(models.Chat, {
-			as: 'chat',
-			foreignKey: 'chatId',
-			onDelete: 'CASCADE',
+			as: "chat",
+			foreignKey: "chatId",
+			onDelete: "CASCADE",
 		});
 	}
 }

@@ -24,8 +24,15 @@ export default function App() {
 	const [selectedCharacter, setSelectedCharacter] = useState("Alice");
 	const [view, setView] = useState(VIEW.CHAT);
 
-	const { messages, history, chatId, createChat, deleteChat, loadMessages, sendMessage } =
-		useChat();
+	const {
+		messages,
+		history,
+		chatId,
+		createChat,
+		deleteChat,
+		loadMessages,
+		sendMessage,
+	} = useChat();
 	const { characterData, saveCharacter } = useCharacter(selectedCharacter);
 	const { params, setParams } = useSettings();
 

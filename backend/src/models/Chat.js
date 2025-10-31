@@ -1,4 +1,4 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model } from "sequelize";
 
 export default class Chat extends Model {
 	static init(sequelize) {
@@ -12,28 +12,28 @@ export default class Chat extends Model {
 				title: {
 					type: DataTypes.STRING,
 					allowNull: false,
-					defaultValue: 'Untitled Chat',
+					defaultValue: "Untitled Chat",
 				},
 				character: {
 					type: DataTypes.STRING,
 					allowNull: false,
-					defaultValue: 'default',
+					defaultValue: "default",
 				},
 			},
 			{
 				sequelize,
-				modelName: 'Chat',
-				tableName: 'chats',
+				modelName: "Chat",
+				tableName: "chats",
 				timestamps: true,
-			}
+			},
 		);
 	}
 
 	static associate(models) {
 		this.hasMany(models.Message, {
-			as: 'messages',
-			foreignKey: 'chatId',
-			onDelete: 'CASCADE',
+			as: "messages",
+			foreignKey: "chatId",
+			onDelete: "CASCADE",
 		});
 	}
 }

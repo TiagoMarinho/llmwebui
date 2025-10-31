@@ -34,7 +34,10 @@ export const createChat = async (req, res) => {
 			title = "Untitled Chat"; // localization needed
 		}
 
-		const chat = await Chat.create({ title: title.trim(), character: character.trim() });
+		const chat = await Chat.create({
+			title: title.trim(),
+			character: character.trim(),
+		});
 		res.status(201).json({ chat });
 	} catch (err) {
 		res.status(500).json({ error: err.message });
