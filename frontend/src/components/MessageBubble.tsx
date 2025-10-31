@@ -9,7 +9,7 @@ export default function MessageBubble({ message }: { message: Message }) {
 					backgroundColor: "var(--color-input)",
 					borderColor: "var(--color-accent)",
 					border: "1px solid",
-			  };
+				};
 
 	const bubbleClass =
 		message.role === ROLE.USER

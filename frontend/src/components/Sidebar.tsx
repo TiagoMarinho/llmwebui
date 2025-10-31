@@ -4,7 +4,7 @@ export default function Sidebar({
 	history = [],
 	onSelectChat,
 	onNewChat,
-	onDeleteChat
+	onDeleteChat,
 }: {
 	history: Chat[];
 	onSelectChat: (id: number) => void;
@@ -37,14 +37,10 @@ export default function Sidebar({
 						className="cursor-pointer flex justify-between items-center p-2 px-3 border-b border-border rounded-lg mb-1 
 								transition-colors duration-200 hover:bg-accent/10"
 					>
-						<span
-							className="flex-1"
-						>
-							{chat.title}
-						</span>
+						<span className="flex-1">{chat.title}</span>
 						<button
 							onClick={(e) => {
-								e.stopPropagation();  // prevent selecting the chat
+								e.stopPropagation(); // prevent selecting the chat
 								onDeleteChat(chat.id);
 							}}
 							className="text-sm text-400 px-2"

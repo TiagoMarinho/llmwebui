@@ -1,4 +1,4 @@
-import { VIEW } from '../shared/view'
+import { VIEW } from "../shared/view";
 
 export default function CharacterEditor({
 	selectedCharacter,
