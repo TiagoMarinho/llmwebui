@@ -1,33 +1,36 @@
 import { useState, useEffect } from "react";
+import { Message } from "../types/message";
 import { ROLE } from "../../../shared/role.js";
+import { Settings } from "./useSettings";
+import { Chat } from "../types/chat";
 
 export default function useChat() {
-	const [messages, setMessages] = useState([]);
-	const [history, setHistory] = useState([]);
-	const [chatId, setChatId] = useState(null);
+	const [messages, setMessages] = useState<Message[]>([]);
+	const [history, setHistory] = useState<Chat[]>([]);
+	const [chatId, setChatId] = useState<number | null>(null);
 
 	const loadChats = async () => {
 		try {
 			const res = await fetch("/api/v1/chats");
 			const data = await res.json();
-			const chats = data.chats || [];
+			const chats: Chat[] = data.chats || [];
 			setHistory(chats);
-	
+
 			if (!chats.length) {
 				// no chats exist, create default
-				const id = await createChat("Alice"); 
+				const id = await createChat("Alice");
 				await loadMessages(id);
 				setChatId(id);
 				return;
 			}
-			
+
 			const latestChatId = chats[0].id;
 			await loadMessages(latestChatId);
 			setChatId(latestChatId);
 		} catch (err) {
 			console.error(err);
 		}
-	};	
+	};
 
 	const createChat = async (character = "default") => {
 		const res = await fetch("/api/v1/chats", {
@@ -42,7 +45,7 @@ export default function useChat() {
 		return data.chat.id;
 	};
 
-	const loadMessages = async (id) => {
+	const loadMessages = async (id: number) => {
 		if (!id) return;
 		try {
 			const res = await fetch(`/api/v1/chats/${id}/messages`);
@@ -53,9 +56,12 @@ export default function useChat() {
 			console.error(err);
 		}
 	};
-	
 
-	const sendMessage = async (text, params, character) => {
+	const sendMessage = async (
+		text: string,
+		params: Settings,
+		character: string
+	) => {
 		if (!chatId) return;
 		const res = await fetch(`/api/v1/chats/${chatId}/messages`, {
 			method: "POST",

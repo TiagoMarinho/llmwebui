@@ -1,7 +1,14 @@
 import MessageBubble from "./MessageBubble";
 import InputBox from "./InputBox";
+import { Message } from "../types/message";
 
-export default function ChatWindow({ messages = [], onSend }) {
+export default function ChatWindow({
+	messages = [],
+	onSend,
+}: {
+	messages: Message[];
+	onSend: (text: string) => void;
+}) {
 	return (
 		<div
 			className="flex-1 flex flex-col p-6 rounded-xl m-4"

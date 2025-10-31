@@ -1,4 +1,14 @@
-export default function Sidebar({ history = [], onSelectChat, onNewChat }) {
+import { Chat } from "../types/chat";
+
+export default function Sidebar({
+	history = [],
+	onSelectChat,
+	onNewChat,
+}: {
+	history: Chat[];
+	onSelectChat: (id: number) => void;
+	onNewChat: () => void;
+}) {
 	return (
 		<div
 			className="w-[20%] max-w-[280px] shrink-0 p-6 overflow-y-auto"

@@ -1,6 +1,7 @@
 import { ROLE } from "../../../shared/role";
+import { Message } from "../types/message";
 
-export default function MessageBubble({ message }) {
+export default function MessageBubble({ message }: { message: Message }) {
 	const bubbleStyle =
 		message.role === ROLE.USER
 			? { backgroundColor: "#6b4cff" }

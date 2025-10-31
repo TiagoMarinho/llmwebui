@@ -1,3 +1,15 @@
+import { Settings } from "../hooks/useSettings";
+import { VIEW } from '../shared/view'
+
+interface SettingsPanelProps {
+	params: Settings;
+	setParams: (params: Settings) => void;
+	selectedCharacter: string;
+	setSelectedCharacter: (character: string) => void;
+	view: string;
+	setView: (view: VIEW) => void;
+}
+
 export default function SettingsPanel({
 	params,
 	setParams,
@@ -5,10 +17,13 @@ export default function SettingsPanel({
 	setSelectedCharacter,
 	view,
 	setView,
-}) {
-	const handleChange = (e) =>
+}: SettingsPanelProps) {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setParams({ ...params, [e.target.name]: parseFloat(e.target.value) });
-	const handleCharacterChange = (e) => setSelectedCharacter(e.target.value);
+	};
+	const handleCharacterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setSelectedCharacter(e.target.value);
+	};
 
 	return (
 		<div className="w-[20%] max-w-[280px] shrink-0 p-6 overflow-y-auto bg-panel border-r border-border">
@@ -43,13 +58,13 @@ export default function SettingsPanel({
 
 			{view === "chat" ? (
 				<button
-					onClick={() => setView("characterEditor")}
+					onClick={() => setView(VIEW.CHARACTER_EDITOR)}
 					className="w-full mt-4"
 				>
 					Edit Character
 				</button>
 			) : (
-				<button onClick={() => setView("chat")} className="w-full mt-4">
+				<button onClick={() => setView(VIEW.CHAT)} className="w-full mt-4">
 					← Back to Chat
 				</button>
 			)}
