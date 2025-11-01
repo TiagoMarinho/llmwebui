@@ -5,7 +5,7 @@ import Message from "./Message.ts";
 const models = { Chat, Message };
 
 export const initModels = () => {
-	Object.values(models).forEach((model) => model.init(sequelize));
+	Object.values(models).forEach((model) => model.initModel(sequelize));
 
 	Object.values(models)
 		.filter((model) => typeof model.associate === "function")

@@ -1,6 +1,5 @@
 import { DataTypes, Model, Sequelize, ModelStatic } from "sequelize";
 import { Character, MessageAttributes } from "../types";
-import Chat from "./Chat";
 
 
 export default class Message extends Model<MessageAttributes> implements MessageAttributes {
@@ -71,7 +70,7 @@ export default class Message extends Model<MessageAttributes> implements Message
 		) as typeof Message;
 	}
 
-	static associate(models: { [key: string]: ModelStatic<Chat> }) {
+	static associate(models: { [key: string]: ModelStatic<Model> }) {
 		this.belongsTo(models.Chat, {
 			as: "chat",
 			foreignKey: "chatId",
