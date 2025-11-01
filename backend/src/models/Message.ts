@@ -1,7 +1,20 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Sequelize, ModelStatic } from "sequelize";
+import { Character, MessageAttributes } from "../types";
+import Chat from "./Chat";
 
-export default class Message extends Model {
-	static init(sequelize) {
+
+export default class Message extends Model<MessageAttributes> implements MessageAttributes {
+	public id!: number;
+	public chatId!: number;
+	public character!: Character;
+	public role!: "user" | "assistant" | "system";
+	public text!: string;
+	public metadata!: object | null;
+
+	public readonly createdAt!: Date;
+	public readonly updatedAt!: Date;
+
+	static initModel(sequelize: Sequelize) {
 		return super.init(
 			{
 				id: {
@@ -54,11 +67,11 @@ export default class Message extends Model {
 				modelName: "Message",
 				tableName: "messages",
 				timestamps: true,
-			},
-		);
+			}
+		) as typeof Message;
 	}
 
-	static associate(models) {
+	static associate(models: { [key: string]: ModelStatic<Chat> }) {
 		this.belongsTo(models.Chat, {
 			as: "chat",
 			foreignKey: "chatId",

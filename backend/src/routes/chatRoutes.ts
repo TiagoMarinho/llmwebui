@@ -4,7 +4,7 @@ import {
 	getChatById,
 	createChat,
 	deleteChat,
-} from "../controllers/chatController.js";
+} from "../controllers/chatController.ts";
 
 const router = Router();
 

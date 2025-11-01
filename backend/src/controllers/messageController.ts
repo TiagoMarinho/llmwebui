@@ -1,6 +1,6 @@
-import Message from "../models/Message.js";
-import Chat from "../models/Chat.js";
-import llmService from "../services/llmService.js";
+import Message from "../models/Message.ts";
+import Chat from "../models/Chat.ts";
+import llmService from "../services/llmService.ts";
 
 export const getMessages = async (req, res) => {
 	try {

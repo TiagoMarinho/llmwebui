@@ -1,4 +1,7 @@
-const sendMessage = async (text, params, character) => {
+import { Character, Params } from "../types/index";
+
+
+const sendMessage = async (text: string, params: Params, character: Character) => {
 	// Call OpenAI API or local LLM
 	const mockData = {
 		response: "Hello, world!",
