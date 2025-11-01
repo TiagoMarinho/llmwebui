@@ -1,7 +1,15 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
+import { ChatAttributes } from "../types";
 
-export default class Chat extends Model {
-	static init(sequelize) {
+export default class Chat extends Model<ChatAttributes> implements ChatAttributes {
+	public id!: number;
+	public title!: string;
+	public character!: string;
+
+	public readonly createdAt!: Date;
+	public readonly updatedAt!: Date;
+
+	static initModel(sequelize: Sequelize) {
 		return super.init(
 			{
 				id: {
@@ -26,10 +34,10 @@ export default class Chat extends Model {
 				tableName: "chats",
 				timestamps: true,
 			},
-		);
+		) as typeof Chat;
 	}
 
-	static associate(models) {
+	static associate(models: { [key: string]: ModelStatic<Model> }) {
 		this.hasMany(models.Message, {
 			as: "messages",
 			foreignKey: "chatId",

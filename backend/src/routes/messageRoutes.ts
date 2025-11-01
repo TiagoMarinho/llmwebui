@@ -3,7 +3,7 @@ import {
 	getMessages,
 	sendMessage,
 	getMessageById,
-} from "../controllers/messageController.js";
+} from "../controllers/messageController.ts";
 
 const router = Router();
 

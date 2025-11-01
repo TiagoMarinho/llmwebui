@@ -1,28 +1,31 @@
-import Chat from "../models/Chat.js";
+import Chat from "../models/Chat.ts";
+import { Request, Response } from "express";
+import { ChatAttributes } from "../types/ChatAttributes.ts";
+import { getErrorMessage } from "../utils/getErrorMessage.ts";
 
-export const getChats = async (req, res) => {
+export const getChats = async (req: Request<ChatAttributes>, res: Response) => {
 	try {
 		const chats = await Chat.findAll({
 			order: [["updatedAt", "DESC"]],
 		});
 		res.json({ chats });
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).json({ error: getErrorMessage(err) });
 	}
 };
 
-export const getChatById = async (req, res) => {
+export const getChatById = async (req: Request<ChatAttributes>, res: Response) => {
 	try {
 		const { id } = req.params;
 		const chat = await Chat.findByPk(id);
 		if (!chat) return res.status(404).json({ error: "Chat not found" });
 		res.json({ chat });
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).json({ error: getErrorMessage(err) });
 	}
 };
 
-export const createChat = async (req, res) => {
+export const createChat = async (req: Request<ChatAttributes>, res: Response) => {
 	try {
 		let { title, character } = req.body;
 
@@ -40,11 +43,11 @@ export const createChat = async (req, res) => {
 		});
 		res.status(201).json({ chat });
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).json({ error: getErrorMessage(err) });
 	}
 };
 
-export const deleteChat = async (req, res) => {
+export const deleteChat = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 
@@ -57,6 +60,6 @@ export const deleteChat = async (req, res) => {
 
 		res.status(200).json({ message: "Chat deleted successfully", id });
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).json({ error: getErrorMessage(err) });
 	}
 };

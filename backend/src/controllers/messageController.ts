@@ -1,8 +1,11 @@
-import Message from "../models/Message.js";
-import Chat from "../models/Chat.js";
-import llmService from "../services/llmService.js";
+import Message from "../models/Message.ts";
+import Chat from "../models/Chat.ts";
+import llmService from "../services/llmService.ts";
+import { MessageAttributes } from "../types/MessageAttributes.ts";
+import { Request, Response } from "express";
+import { getErrorMessage } from "../utils/getErrorMessage.ts";
 
-export const getMessages = async (req, res) => {
+export const getMessages = async (req: Request<MessageAttributes>, res: Response) => {
 	try {
 		const { chatId } = req.params;
 		if (!chatId)
@@ -11,11 +14,11 @@ export const getMessages = async (req, res) => {
 		const messages = await Message.findAll({ where: { chatId } });
 		res.json({ messages });
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).json({ error: getErrorMessage(err) });
 	}
 };
 
-export const getMessageById = async (req, res) => {
+export const getMessageById = async (req: Request<MessageAttributes>, res: Response) => {
 	try {
 		const { chatId, id } = req.params;
 		if (!chatId)
@@ -27,11 +30,11 @@ export const getMessageById = async (req, res) => {
 
 		res.json({ message });
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).json({ error: getErrorMessage(err) });
 	}
 };
 
-export const sendMessage = async (req, res) => {
+export const sendMessage = async (req: Request<MessageAttributes>, res: Response) => {
 	try {
 		const { chatId } = req.params;
 		const { text, params, character } = req.body;
@@ -58,6 +61,6 @@ export const sendMessage = async (req, res) => {
 
 		res.json(llmResponse);
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		res.status(500).json({ error: getErrorMessage(err) });
 	}
 };
