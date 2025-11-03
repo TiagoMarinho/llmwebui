@@ -16,13 +16,8 @@ export default function useChat() {
 			const chats: Chat[] = data.chats || [];
 			setHistory(chats);
 
-			if (!chats.length) {
-				// no chats exist, create default
-				const id = await createChat("Alice");
-				await loadMessages(id);
-				setChatId(id);
+			if (chats.length === 0)
 				return;
-			}
 
 			const latestChatId = chats[0].id;
 			await loadMessages(latestChatId);
@@ -59,26 +54,21 @@ export default function useChat() {
 
 			if (!isDeletingCurrent) return;
 
-			if (updatedHistory.length === 0) {
-				await createChat("Alice");
-				return;
-			}
+			const nextChatId =
+				updatedHistory[currentIndex]?.id ||
+				updatedHistory[currentIndex - 1]?.id ||
+				updatedHistory[0]?.id || 
+				null
 
-			const nextChat =
-				updatedHistory[currentIndex] ||
-				updatedHistory[currentIndex - 1] ||
-				updatedHistory[0];
-			if (nextChat) {
-				setChatId(nextChat.id);
-				await loadMessages(nextChat.id);
-			}
+			setChatId(nextChatId);
+			await loadMessages(nextChatId);
 		} catch (err) {
 			console.error("Failed to delete chat:", err);
 		}
 	};
 
-	const loadMessages = async (id: number) => {
-		if (!id) return;
+	const loadMessages = async (id: number | null) => {
+		if (!id) setMessages([])
 		try {
 			const res = await fetch(`/api/v1/chats/${id}/messages`);
 			const data = await res.json();
@@ -94,8 +84,11 @@ export default function useChat() {
 		params: Settings,
 		character: string,
 	) => {
-		if (!chatId) return;
-		const res = await fetch(`/api/v1/chats/${chatId}/messages`, {
+		const currentChatId = chatId ?? await createChat("Alice");
+		if (!chatId)
+			await loadMessages(currentChatId);
+
+		const res = await fetch(`/api/v1/chats/${currentChatId}/messages`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ text, params, character }),
