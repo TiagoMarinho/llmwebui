@@ -1,6 +1,5 @@
-// backend/src/server.js
-import app from "./app.js";
-import { sequelize, initModels } from "./models/index.js";
+import app from "./app.ts";
+import { sequelize, initModels } from "./models/index.ts";
 
 initModels();
 
