@@ -4,6 +4,7 @@ import llmService from "../services/llmService.ts";
 import { MessageAttributes } from "../types/MessageAttributes.ts";
 import { Request, Response } from "express";
 import { getErrorMessage } from "../utils/getErrorMessage.ts";
+import { Role } from "../types/Role.ts";
 
 export const getMessages = async (
 	req: Request<MessageAttributes>,
@@ -49,7 +50,7 @@ export const sendMessage = async (
 		const { text, params, character } = req.body;
 		const userMessage = await Message.create({
 			text,
-			role: "user",
+			role: Role.User,
 			character,
 			chatId,
 		});
@@ -63,7 +64,7 @@ export const sendMessage = async (
 
 		await Message.create({
 			text: llmResponse.response,
-			role: "assistant",
+			role: Role.Assistant,
 			character,
 			chatId,
 		});

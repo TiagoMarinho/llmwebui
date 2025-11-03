@@ -1,10 +1,11 @@
 import { Character } from "./Character";
+import { Role } from "./Role";
 
 export interface MessageAttributes {
 	id?: number;
 	chatId: number;
 	character: Character;
-	role: "user" | "assistant" | "system";
+	role: Role;
 	text: string;
 	metadata?: object | null;
 }

@@ -1,5 +1,6 @@
 import { DataTypes, Model, Sequelize, ModelStatic } from "sequelize";
 import { Character, MessageAttributes } from "../types";
+import { Role } from "../types/Role";
 
 export default class Message
 	extends Model<MessageAttributes>
@@ -8,7 +9,7 @@ export default class Message
 	public id!: number;
 	public chatId!: number;
 	public character!: Character;
-	public role!: "user" | "assistant" | "system";
+	public role!: Role;
 	public text!: string;
 	public metadata!: object | null;
 
@@ -44,7 +45,7 @@ export default class Message
 					},
 				},
 				role: {
-					type: DataTypes.ENUM("user", "assistant", "system"),
+					type: DataTypes.ENUM(...Object.values(Role)),
 					allowNull: false,
 					validate: {
 						notNull: { msg: "Role is required" },

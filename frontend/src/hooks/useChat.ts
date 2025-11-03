@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Message } from "../types/message";
-import { ROLE } from "../../../shared/role.js";
+import { Role } from "../types/role";
 import { Settings } from "./useSettings";
 import { Chat } from "../types/chat";
 
@@ -103,8 +103,8 @@ export default function useChat() {
 		const data = await res.json();
 		setMessages((prev) => [
 			...prev,
-			{ role: ROLE.USER, text },
-			{ role: ROLE.ASSISTANT, text: data.response },
+			{ role: Role.User, text },
+			{ role: Role.Assistant, text: data.response },
 		]);
 	};
 
