@@ -14,7 +14,10 @@ export const getChats = async (req: Request<ChatAttributes>, res: Response) => {
 	}
 };
 
-export const getChatById = async (req: Request<ChatAttributes>, res: Response) => {
+export const getChatById = async (
+	req: Request<ChatAttributes>,
+	res: Response,
+) => {
 	try {
 		const { id } = req.params;
 		const chat = await Chat.findByPk(id);
@@ -25,7 +28,10 @@ export const getChatById = async (req: Request<ChatAttributes>, res: Response) =
 	}
 };
 
-export const createChat = async (req: Request<ChatAttributes>, res: Response) => {
+export const createChat = async (
+	req: Request<ChatAttributes>,
+	res: Response,
+) => {
 	try {
 		let { title, character } = req.body;
 

@@ -1,7 +1,10 @@
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
 import { ChatAttributes } from "../types";
 
-export default class Chat extends Model<ChatAttributes> implements ChatAttributes {
+export default class Chat
+	extends Model<ChatAttributes>
+	implements ChatAttributes
+{
 	public id!: number;
 	public title!: string;
 	public character!: string;

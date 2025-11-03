@@ -1,8 +1,10 @@
 import { DataTypes, Model, Sequelize, ModelStatic } from "sequelize";
 import { Character, MessageAttributes } from "../types";
 
-
-export default class Message extends Model<MessageAttributes> implements MessageAttributes {
+export default class Message
+	extends Model<MessageAttributes>
+	implements MessageAttributes
+{
 	public id!: number;
 	public chatId!: number;
 	public character!: Character;
@@ -66,7 +68,7 @@ export default class Message extends Model<MessageAttributes> implements Message
 				modelName: "Message",
 				tableName: "messages",
 				timestamps: true,
-			}
+			},
 		) as typeof Message;
 	}
 

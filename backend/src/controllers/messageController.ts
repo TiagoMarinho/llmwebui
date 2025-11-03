@@ -5,7 +5,10 @@ import { MessageAttributes } from "../types/MessageAttributes.ts";
 import { Request, Response } from "express";
 import { getErrorMessage } from "../utils/getErrorMessage.ts";
 
-export const getMessages = async (req: Request<MessageAttributes>, res: Response) => {
+export const getMessages = async (
+	req: Request<MessageAttributes>,
+	res: Response,
+) => {
 	try {
 		const { chatId } = req.params;
 		if (!chatId)
@@ -18,7 +21,10 @@ export const getMessages = async (req: Request<MessageAttributes>, res: Response
 	}
 };
 
-export const getMessageById = async (req: Request<MessageAttributes>, res: Response) => {
+export const getMessageById = async (
+	req: Request<MessageAttributes>,
+	res: Response,
+) => {
 	try {
 		const { chatId, id } = req.params;
 		if (!chatId)
@@ -34,7 +40,10 @@ export const getMessageById = async (req: Request<MessageAttributes>, res: Respo
 	}
 };
 
-export const sendMessage = async (req: Request<MessageAttributes>, res: Response) => {
+export const sendMessage = async (
+	req: Request<MessageAttributes>,
+	res: Response,
+) => {
 	try {
 		const { chatId } = req.params;
 		const { text, params, character } = req.body;
