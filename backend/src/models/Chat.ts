@@ -1,5 +1,5 @@
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
-import { ChatAttributes } from "../types";
+import { ChatAttributes } from "../types/index.ts";
 
 export default class Chat
 	extends Model<ChatAttributes>

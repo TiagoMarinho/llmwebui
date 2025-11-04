@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize, ModelStatic } from "sequelize";
-import { Character, MessageAttributes } from "../types";
-import { Role } from "../types/Role";
+import { Character, MessageAttributes } from "../types/index.ts";
+import { Role } from "../types/Role.ts";
 
 export default class Message
 	extends Model<MessageAttributes>
