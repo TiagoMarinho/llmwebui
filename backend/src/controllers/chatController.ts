@@ -69,3 +69,25 @@ export const deleteChat = async (req: Request, res: Response) => {
 		res.status(500).json({ error: getErrorMessage(err) });
 	}
 };
+
+export const updateChat = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const { title } = req.body;
+
+		if (!id) return res.status(400).json({ error: "Chat ID is required" });
+		if (!title || typeof title !== "string" || !title.trim()) {
+			return res.status(400).json({ error: "A valid title is required" });
+		}
+
+		const chat = await Chat.findByPk(id);
+		if (!chat) return res.status(404).json({ error: "Chat not found" });
+
+		chat.title = title.trim();
+		await chat.save();
+
+		res.status(200).json({ chat });
+	} catch (err) {
+		res.status(500).json({ error: getErrorMessage(err) });
+	}
+};

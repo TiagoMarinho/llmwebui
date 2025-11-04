@@ -28,16 +28,29 @@ export default function useChat() {
 	};
 
 	const createChat = async (character = "default") => {
-		const res = await fetch("/api/v1/chats", {
+		// Step 1: Create the chat with a temporary title
+		const createRes = await fetch("/api/v1/chats", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ title: "New Chat", character }),
+			body: JSON.stringify({ title: "New Chat...", character }), // Placeholder title
 		});
-		const data = await res.json();
-		setChatId(data.chat.id);
-		await loadChats();
+		const createData = await createRes.json();
+		const newChat = createData.chat;
+		const newChatId = newChat.id;
+
+		// Step 2: Immediately update the chat with the desired title
+		const finalTitle = `Chat #${newChatId}`;
+		await fetch(`/api/v1/chats/${newChatId}`, {
+			method: "PUT",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ title: finalTitle }),
+		});
+
+		// Step 3: Refresh state and set the new chat as active
+		setChatId(newChatId);
+		await loadChats(); // Refreshes the history list with the final title
 		setMessages([]);
-		return data.chat.id;
+		return newChatId;
 	};
 
 	const deleteChat = async (id: number) => {
@@ -68,7 +81,10 @@ export default function useChat() {
 	};
 
 	const loadMessages = async (id: number | null) => {
-		if (!id) setMessages([])
+		if (!id) {
+			setMessages([]);
+			return;
+		}
 		try {
 			const res = await fetch(`/api/v1/chats/${id}/messages`);
 			const data = await res.json();
