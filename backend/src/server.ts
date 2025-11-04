@@ -5,7 +5,7 @@ initModels();
 
 (async () => {
 	try {
-		await sequelize.sync({ alter: true });
+		await sequelize.sync();
 		console.log("Database synced");
 
 		const PORT = process.env.PORT || 5000;
