@@ -1,11 +1,9 @@
 import app from "./app.ts";
-import { cleanup } from "./db.ts";
 import { sequelize, initModels } from "./models/index.ts";
-
-initModels();
 
 (async () => {
 	try {
+		initModels();
 		await sequelize.sync();
 		console.log("Database synced");
 
@@ -13,12 +11,22 @@ initModels();
 		app.listen(PORT, () => {
 			console.log(`Server running on http://localhost:${PORT}`);
 		});
-
 	} catch (err) {
 		console.error("Failed to start server", err);
 	}
 })();
 
-process.on('SIGUSR2', async () => {
-	await cleanup();
+const gracefulShutdown = async () => {
+	try {
+		await sequelize.close();
+	} catch (err) {
+		console.error("Error during shutdown", err);
+	} finally {
+		process.exit(0);
+	}
+};
+
+const terminationEvents = ["SIGTERM", "SIGINT", "SIGUSR2"];
+terminationEvents.forEach((terminationEventName) => {
+	process.once(terminationEventName, async () => gracefulShutdown());
 });
