@@ -5,5 +5,9 @@ const sequelize = new Sequelize("sqlite:./database/database.sqlite", {
 	logging: false,
 });
 
-export { sequelize };
+export const cleanup = async () => {
+	await sequelize.close();
+	process.exit(0);
+}
+
 export default sequelize;
