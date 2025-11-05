@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-import { initModels } from "./models";
+import { initModels } from "./models/index.ts";
 
 const sequelize = new Sequelize("sqlite:./database/database.sqlite", {
 	dialect: "sqlite",
