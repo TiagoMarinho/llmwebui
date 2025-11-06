@@ -5,6 +5,7 @@ import Sidebar from "./components/Sidebar";
 import ChatWindow from "./components/ChatWindow";
 import SettingsPanel from "./components/SettingsPanel";
 import CharacterEditor from "./components/CharacterEditor";
+import ThemeToggler from "./components/ThemeToggler";
 
 import useChat from "./hooks/useChat";
 import useCharacter from "./hooks/useCharacter";
@@ -74,6 +75,8 @@ export default function App() {
 				view={view}
 				setView={setView}
 			/>
+
+			<ThemeToggler />
 		</div>
 	);
 }
