@@ -4,6 +4,7 @@ import { VIEW } from "../shared/view";
 interface SettingsPanelProps {
 	params: Settings;
 	setParams: (params: Settings) => void;
+	saveSettings: (params: Settings) => void;
 	selectedCharacter: string;
 	setSelectedCharacter: (character: string) => void;
 	view: string;
@@ -13,13 +14,19 @@ interface SettingsPanelProps {
 export default function SettingsPanel({
 	params,
 	setParams,
+	saveSettings,
 	selectedCharacter,
 	setSelectedCharacter,
 	view,
 	setView,
 }: SettingsPanelProps) {
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setParams({ ...params, [e.target.name]: parseFloat(e.target.value) });
+		const newSettings = {
+			...params,
+			[e.target.name]: parseFloat(e.target.value),
+		};
+		setParams(newSettings);
+		saveSettings(newSettings);
 	};
 	const handleCharacterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setSelectedCharacter(e.target.value);

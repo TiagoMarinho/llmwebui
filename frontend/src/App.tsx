@@ -34,7 +34,7 @@ export default function App() {
 		sendMessage,
 	} = useChat();
 	const { characterData, saveCharacter } = useCharacter(selectedCharacter);
-	const { params, setParams } = useSettings();
+	const { params, setParams, saveSettings } = useSettings();
 
 	const views = {
 		[VIEW.CHAT]: () => (
@@ -69,6 +69,7 @@ export default function App() {
 			<SettingsPanel
 				params={params}
 				setParams={setParams}
+				saveSettings={saveSettings}
 				selectedCharacter={selectedCharacter}
 				setSelectedCharacter={setSelectedCharacter}
 				view={view}
