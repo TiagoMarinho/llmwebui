@@ -5,15 +5,36 @@ export interface Settings {
 }
 
 export default function useSettings() {
-	const [params, setParams] = useState({ temperature: 0.7 });
+	const [params, setParams] = useState({} as Settings);
+
+	const loadSettings = async () => {
+		try {
+			const res = await fetch("/api/v1/user/settings");
+			const data = await res.json();
+			setParams(data.settings);
+			console.log("Loaded settings:", data.settings);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const saveSettings = async (newSettings: Settings) => {
+		try {
+			console.log("Saving settings:", newSettings);
+			await fetch("/api/v1/user/settings", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ settings: newSettings }),
+			});
+			setParams(newSettings);
+		} catch (err) {
+			console.error(err);
+		}
+	};
 
 	useEffect(() => {
-		// TODO: load settings from localStorage or database
+		loadSettings();
 	}, []);
 
-	useEffect(() => {
-		// TODO: save settings to localStorage or database whenever params change
-	}, [params]);
-
-	return { params, setParams };
+	return { params, setParams, saveSettings };
 }
