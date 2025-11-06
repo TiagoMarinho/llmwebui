@@ -1,5 +1,4 @@
 import { Chat } from "../types/chat";
-import ThemeToggler from "./ThemeToggler";
 
 export default function Sidebar({
 	history = [],
@@ -20,7 +19,6 @@ export default function Sidebar({
 				borderRight: "1px solid var(--color-border)",
 			}}
 		>
-			<ThemeToggler />
 			<div className="flex justify-between items-center mb-4">
 				<h2>History</h2>
 				<button

@@ -5,7 +5,7 @@ export default function ThemeToggler() {
 	return (
 		<button
 			onClick={toggleTheme}
-			className="relative w-14 h-14 rounded-2xl transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg overflow-hidden"
+			className="fixed bottom-4 left-4 w-14 h-14 rounded-2xl transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg overflow-hidden"
 			style={{ backgroundColor: "var(--color-panel)" }}
 		>
 			<div
