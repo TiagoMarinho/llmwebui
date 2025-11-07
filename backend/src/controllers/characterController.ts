@@ -70,26 +70,10 @@ export const updateCharacter = async (
 			character.name = characterData.name.trim();
 		}
 
-		if (characterData.description !== undefined) {
-			character.description =
-				typeof characterData.description === "string" && characterData.description.trim()
-					? characterData.description.trim()
-					: null;
-		}
+		character.description = characterData?.description?.trim() ?? null
+		character.avatarUrl = characterData?.avatarUrl?.trim() ?? null
+		character.story = characterData?.story?.trim() ?? null
 
-		if (characterData.avatarUrl !== undefined) {
-			character.avatarUrl =
-				typeof characterData.avatarUrl === "string" && characterData.avatarUrl.trim()
-					? characterData.avatarUrl.trim()
-					: null;
-		}
-
-		if (characterData.story !== undefined) {
-			character.story =
-				typeof characterData.story === "string" && characterData.story.trim()
-					? characterData.story.trim()
-					: null;
-		}
 		await character.update(characterData);
 		res.json({ character });
 	} catch (err) {
