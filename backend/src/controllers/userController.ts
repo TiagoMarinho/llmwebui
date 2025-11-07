@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
-import { UserAttributes } from "../types/UserAttributes.ts";
+import { SettingsProfileAttributes } from "../types/UserAttributes.ts";
 import { getErrorMessage } from "../utils/getErrorMessage.ts";
-import User from "../models/User.ts";
+import SettingsProfile from "../models/User.ts";
 
-export const getUserSettings = async (
-	req: Request<UserAttributes>,
+export const getSettingsProfile = async (
+	req: Request<SettingsProfileAttributes>,
 	res: Response,
 ) => {
 	try {
-		let settings = await User.findOne({ where: { id: 1 } });
+		let settings = await SettingsProfile.findOne({ where: { id: 1 } });
 
 		if (!settings) {
-			settings = await User.create({
+			settings = await SettingsProfile.create({
 				id: 1,
-				username: "default",
+				name: "default",
 			});
 		}
 		return res.json(settings);
@@ -22,14 +22,14 @@ export const getUserSettings = async (
 	}
 };
 
-export const upsertUserSettings = async (
-	req: Request<UserAttributes>,
+export const upsertSettingsProfile = async (
+	req: Request<SettingsProfileAttributes>,
 	res: Response,
 ) => {
 	try {
-		const [settings] = await User.upsert({
+		const [settings] = await SettingsProfile.upsert({
 			id: 1,
-			username: "default",
+			name: "default",
 			settings: req.body.settings,
 		});
 

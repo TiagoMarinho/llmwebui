@@ -1,5 +1,5 @@
-export interface UserAttributes {
+export interface SettingsProfileAttributes {
 	id?: number;
-	username: string;
+	name: string;
 	settings?: object;
 }

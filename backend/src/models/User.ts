@@ -1,13 +1,13 @@
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
-import { UserAttributes } from "../types/UserAttributes";
+import { SettingsProfileAttributes } from "../types/UserAttributes";
 
-export default class User
-	extends Model<UserAttributes>
-	implements UserAttributes
+export default class SettingsProfile
+	extends Model<SettingsProfileAttributes>
+	implements SettingsProfileAttributes
 {
 	public id!: number;
-	public username!: string;
-	public settings!: any;
+	public name!: string;
+	public settings!: object;
 
 	static initModel(sequelize: Sequelize) {
 		return super.init(
@@ -17,13 +17,13 @@ export default class User
 					autoIncrement: true,
 					primaryKey: true,
 				},
-				username: {
+				name: {
 					type: DataTypes.STRING,
 					allowNull: false,
 					unique: true,
 					validate: {
-						notNull: { msg: "Username is required" },
-						notEmpty: { msg: "Username cannot be empty" },
+						notNull: { msg: "Name is required" },
+						notEmpty: { msg: "Name cannot be empty" },
 					},
 				},
 				settings: {
@@ -34,11 +34,11 @@ export default class User
 			},
 			{
 				sequelize,
-				modelName: "User",
-				tableName: "users",
-				timestamps: false,
+				modelName: "SettingsProfile",
+				tableName: "settings_profiles",
+				timestamps: true,
 			},
-		) as typeof User;
+		) as typeof SettingsProfile;
 	}
 
 	static associate(models: { [key: string]: ModelStatic<Model> }) {

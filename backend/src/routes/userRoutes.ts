@@ -1,12 +1,12 @@
 import { Router } from "express";
 import {
-	getUserSettings,
-	upsertUserSettings,
+	getSettingsProfile,
+	upsertSettingsProfile,
 } from "../controllers/userController.ts";
 
 const router = Router();
 
-router.get("/settings", getUserSettings);
-router.post("/settings", upsertUserSettings);
+router.get("/", getSettingsProfile);
+router.post("/", upsertSettingsProfile);
 
 export default router;

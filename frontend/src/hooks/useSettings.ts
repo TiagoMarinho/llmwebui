@@ -9,7 +9,7 @@ export default function useSettings() {
 
 	const loadSettings = async () => {
 		try {
-			const res = await fetch("/api/v1/user/settings");
+			const res = await fetch("/api/v1/settings-profiles");
 			const data = await res.json();
 			setParams(data.settings);
 			console.log("Loaded settings:", data.settings);
@@ -21,7 +21,7 @@ export default function useSettings() {
 	const saveSettings = async (newSettings: Settings) => {
 		try {
 			console.log("Saving settings:", newSettings);
-			await fetch("/api/v1/user/settings", {
+			await fetch("/api/v1/settings-profiles", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ settings: newSettings }),
