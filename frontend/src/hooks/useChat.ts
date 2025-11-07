@@ -27,12 +27,12 @@ export default function useChat() {
 		}
 	};
 
-	const createChat = async (characterId: number) => {
+	const createChat = async () => {
 		// Step 1: Create the chat with a temporary title
 		const createRes = await fetch("/api/v1/chats", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ title: "New Chat...", characterId }), // Placeholder title
+			body: JSON.stringify({ title: "New Chat..." }), // Placeholder title
 		});
 		const createData = await createRes.json();
 		const newChat = createData.chat;
@@ -101,7 +101,7 @@ export default function useChat() {
 		params: Settings,
 		character: Character,
 	) => {
-		const currentChatId = chatId ?? (await createChat(character.id));
+		const currentChatId = chatId ?? (await createChat());
 		if (!chatId) await loadMessages(currentChatId);
 
 		const userMessage: Message = {

@@ -7,7 +7,6 @@ export default class Chat
 {
 	public id!: number;
 	public title!: string;
-	public characterId!: number; // Changed from: public character!: string;
 
 	public readonly createdAt!: Date;
 	public readonly updatedAt!: Date;
@@ -25,14 +24,6 @@ export default class Chat
 					allowNull: false,
 					defaultValue: "Untitled Chat",
 				},
-				characterId: {
-					// This block replaces the old 'character: { ... }' block
-					type: DataTypes.INTEGER,
-					allowNull: false,
-					validate: {
-						notNull: { msg: "Character ID is required" },
-					},
-				},
 			},
 			{
 				sequelize,
@@ -48,12 +39,6 @@ export default class Chat
 			as: "messages",
 			foreignKey: "chatId",
 			onDelete: "CASCADE",
-		});
-
-		// Add this association to link Chat to Character
-		this.belongsTo(models.Character, {
-			as: "character",
-			foreignKey: "characterId",
 		});
 	}
 }

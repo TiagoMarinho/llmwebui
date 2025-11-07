@@ -47,7 +47,7 @@ export default function App() {
 
 	const handleCreateChat = () => {
 		if (selectedCharacter) {
-			createChat(selectedCharacter.id);
+			createChat();
 		} else {
 			console.error("No character selected to create chat.");
 		}

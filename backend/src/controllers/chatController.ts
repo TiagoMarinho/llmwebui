@@ -33,11 +33,7 @@ export const createChat = async (
 	res: Response,
 ) => {
 	try {
-		let { title, characterId } = req.body;
-
-		if (!characterId || typeof characterId !== "number") {
-			return res.status(400).json({ error: "CharacterId is required" });
-		}
+		let { title } = req.body;
 
 		if (!title || typeof title !== "string" || !title.trim()) {
 			title = "Untitled Chat"; // localization needed
@@ -45,7 +41,7 @@ export const createChat = async (
 
 		const chat = await Chat.create({
 			title: title.trim(),
-			characterId: characterId,
+
 		});
 		res.status(201).json({ chat });
 	} catch (err) {
