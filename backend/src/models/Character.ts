@@ -9,7 +9,7 @@ export default class Character
 	public name!: string;
 	public description!: string | null;
 	public avatarUrl!: string | null;
-	public systemPrompt!: string | null;
+	public story!: string | null;
 
 	public readonly createdAt!: Date;
 	public readonly updatedAt!: Date;
@@ -49,7 +49,7 @@ export default class Character
 						}
 					}
 				},
-				systemPrompt: {
+				story: {
 					type: DataTypes.TEXT,
 					allowNull: true,
 				},
@@ -65,11 +65,6 @@ export default class Character
 	}
 
 	static associate(models: { [key: string]: ModelStatic<Model> }) {
-		this.hasMany(models.Chat, {
-			as: "chats",
-			foreignKey: "characterId",
-		});
-
 		this.hasMany(models.Message, {
 			as: "messages",
 			foreignKey: "characterId",
