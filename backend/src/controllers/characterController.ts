@@ -37,22 +37,18 @@ export const createCharacter = async (
 	res: Response,
 ) => {
 	try {
-		console.log(11)
 		let { name, description, avatarUrl, systemPrompt } = req.body;
 
 		if (!name || typeof name !== "string" || !name.trim()) {
 			return res.status(400).json({ error: "Name is required" });
 		}
-		console.log(22)
 		const character = await Character.create({
 			name: name.trim(),
 			description: description?.trim() || null,
 			avatarUrl: avatarUrl?.trim() || null,
 			systemPrompt: systemPrompt?.trim() || null,
 		});
-		console.log(22)
 		res.status(201).json({ character });
-		console.log(33)
 	} catch (err) {
 		res.status(500).json({ error: getErrorMessage(err) });
 	}
