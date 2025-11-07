@@ -38,20 +38,11 @@ export default class Character
 				avatarUrl: {
 					type: DataTypes.STRING,
 					allowNull: false,
-					defaultValue: 'https://i.ibb.co/B5LT51RD/user.png',
+					defaultValue: '/images/characters/default_avatar.png',
 					set(value) {
-						const fallback = 'https://i.ibb.co/B5LT51RD/user.png';
+						const fallback = '/images/characters/default_avatar.png';
 						this.setDataValue('avatarUrl', value || fallback);
 					},
-					validate: {
-						isUrl: {
-							msg: 'Avatar must be a valid URL.'
-						}
-					}
-				},
-				story: {
-					type: DataTypes.TEXT,
-					allowNull: true,
 				},
 			},
 			{
