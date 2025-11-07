@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
 	getSettingsProfile,
 	upsertSettingsProfile,
-} from "../controllers/userController.ts";
+} from "../controllers/settingsProfileController.ts";
 
 const router = Router();
 

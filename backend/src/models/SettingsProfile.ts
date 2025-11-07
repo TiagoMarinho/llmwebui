@@ -1,5 +1,5 @@
 import { DataTypes, Model, ModelStatic, Sequelize } from "sequelize";
-import { SettingsProfileAttributes } from "../types/UserAttributes";
+import { SettingsProfileAttributes } from "../types/SettingsProfileAttributes";
 
 export default class SettingsProfile
 	extends Model<SettingsProfileAttributes>

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { SettingsProfileAttributes } from "../types/UserAttributes.ts";
+import { SettingsProfileAttributes } from "../types/SettingsProfileAttributes.ts";
 import { getErrorMessage } from "../utils/getErrorMessage.ts";
-import SettingsProfile from "../models/User.ts";
+import SettingsProfile from "../models/SettingsProfile.ts";
 
 export const getSettingsProfile = async (
 	req: Request<SettingsProfileAttributes>,
