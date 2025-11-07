@@ -21,7 +21,7 @@ export default function CharacterEditor({
 		name: "",
 		description: "",
 		avatarUrl: "",
-		systemPrompt: "",
+		story: "",
 	});
 
 	useEffect(() => {
@@ -30,7 +30,7 @@ export default function CharacterEditor({
 				name: selectedCharacter.name,
 				description: selectedCharacter.description || "",
 				avatarUrl: selectedCharacter.avatarUrl || "",
-				systemPrompt: selectedCharacter.systemPrompt || "",
+				story: selectedCharacter.story || "",
 			});
 		}
 	}, [selectedCharacter]);
