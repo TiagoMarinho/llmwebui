@@ -33,10 +33,10 @@ export const createChat = async (
 	res: Response,
 ) => {
 	try {
-		let { title, character } = req.body;
+		let { title, characterId } = req.body;
 
-		if (!character || typeof character !== "string" || !character.trim()) {
-			return res.status(400).json({ error: "Character is required" });
+		if (!characterId || typeof characterId !== "number") {
+			return res.status(400).json({ error: "CharacterId is required" });
 		}
 
 		if (!title || typeof title !== "string" || !title.trim()) {
@@ -45,7 +45,7 @@ export const createChat = async (
 
 		const chat = await Chat.create({
 			title: title.trim(),
-			character: character.trim(),
+			characterId: characterId,
 		});
 		res.status(201).json({ chat });
 	} catch (err) {

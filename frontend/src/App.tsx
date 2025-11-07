@@ -6,6 +6,7 @@ import ChatWindow from "./components/ChatWindow";
 import SettingsPanel from "./components/SettingsPanel";
 import CharacterEditor from "./components/CharacterEditor";
 import ThemeToggler from "./components/ThemeToggler";
+import CharacterCreator from "./components/CharacterCreator";
 
 import useChat from "./hooks/useChat";
 import useCharacter from "./hooks/useCharacter";
@@ -22,20 +23,43 @@ function ViewRouter({ view, map }: { view: string; map: ViewMap }) {
 }
 
 export default function App() {
-	const [selectedCharacter, setSelectedCharacter] = useState("Alice");
 	const [view, setView] = useState(VIEW.CHAT);
 
 	const {
 		messages,
 		history,
-		chatId,
 		createChat,
 		deleteChat,
 		loadMessages,
 		sendMessage,
 	} = useChat();
-	const { characterData, saveCharacter } = useCharacter(selectedCharacter);
+
+	const {
+		characters,
+		selectedCharacter,
+		selectCharacter,
+		updateCharacter,
+		createCharacter,
+		deleteCharacter,
+	} = useCharacter();
+
 	const { params, setParams } = useSettings();
+
+	const handleCreateChat = () => {
+		if (selectedCharacter) {
+			createChat(selectedCharacter.id);
+		} else {
+			console.error("No character selected to create chat.");
+		}
+	};
+
+	const handleSendMessage = (text: string) => {
+		if (selectedCharacter) {
+			sendMessage(text, params, selectedCharacter);
+		} else {
+			console.error("No character selected to send message.");
+		}
+	};
 
 	const views = {
 		[VIEW.CHAT]: () => (
@@ -43,21 +67,26 @@ export default function App() {
 				<Sidebar
 					history={history}
 					onSelectChat={(id) => loadMessages(id)}
-					onNewChat={() => createChat(selectedCharacter)}
+					onNewChat={handleCreateChat}
 					onDeleteChat={(id) => deleteChat(id)}
 				/>
 				<ChatWindow
 					messages={messages}
-					onSend={(text: string) =>
-						sendMessage(text, params, selectedCharacter)
-					}
+					onSend={handleSendMessage}
 				/>
 			</>
 		),
 		[VIEW.CHARACTER_EDITOR]: () => (
 			<CharacterEditor
 				selectedCharacter={selectedCharacter}
-				saveCharacter={saveCharacter}
+				updateCharacter={updateCharacter}
+				deleteCharacter={deleteCharacter}
+				setView={setView}
+			/>
+		),
+		[VIEW.CHARACTER_CREATOR]: () => (
+			<CharacterCreator
+				createCharacter={createCharacter}
 				setView={setView}
 			/>
 		),
@@ -70,8 +99,9 @@ export default function App() {
 			<SettingsPanel
 				params={params}
 				setParams={setParams}
+				characters={characters}
 				selectedCharacter={selectedCharacter}
-				setSelectedCharacter={setSelectedCharacter}
+				selectCharacter={selectCharacter}
 				view={view}
 				setView={setView}
 			/>

@@ -1,15 +1,16 @@
-import { Character, Params } from "../types/index";
+import { CharacterAttributes } from "../types";
+import {Params } from "../types/index";
 
 const sendMessage = async (
 	text: string,
 	params: Params,
-	character: Character,
+	character: CharacterAttributes,
 ) => {
 	// Call OpenAI API or local LLM
 	const mockData = {
 		response: "Hello, world!",
 		params: '{"temperature": 0.7}',
-		character: "Alice",
+		character: character.name,
 	};
 	return mockData; // placeholder
 };

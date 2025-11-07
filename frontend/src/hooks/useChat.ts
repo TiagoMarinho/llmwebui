@@ -3,6 +3,7 @@ import { Message } from "../types/message";
 import { Role } from "../types/role";
 import { Settings } from "./useSettings";
 import { Chat } from "../types/chat";
+import { Character } from "../types/character";
 
 export default function useChat() {
 	const [messages, setMessages] = useState<Message[]>([]);
@@ -16,8 +17,7 @@ export default function useChat() {
 			const chats: Chat[] = data.chats || [];
 			setHistory(chats);
 
-			if (chats.length === 0)
-				return;
+			if (chats.length === 0) return;
 
 			const latestChatId = chats[0].id;
 			await loadMessages(latestChatId);
@@ -27,16 +27,17 @@ export default function useChat() {
 		}
 	};
 
-	const createChat = async (character = "default") => {
+	const createChat = async (characterId: number) => {
 		// Step 1: Create the chat with a temporary title
 		const createRes = await fetch("/api/v1/chats", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ title: "New Chat...", character }), // Placeholder title
+			body: JSON.stringify({ title: "New Chat...", characterId }), // Placeholder title
 		});
 		const createData = await createRes.json();
 		const newChat = createData.chat;
 		const newChatId = newChat.id;
+
 
 		// Step 2: Immediately update the chat with the desired title
 		const finalTitle = `Chat #${newChatId}`;
@@ -70,8 +71,8 @@ export default function useChat() {
 			const nextChatId =
 				updatedHistory[currentIndex]?.id ||
 				updatedHistory[currentIndex - 1]?.id ||
-				updatedHistory[0]?.id || 
-				null
+				updatedHistory[0]?.id ||
+				null;
 
 			setChatId(nextChatId);
 			await loadMessages(nextChatId);
@@ -98,11 +99,18 @@ export default function useChat() {
 	const sendMessage = async (
 		text: string,
 		params: Settings,
-		character: string,
+		character: Character,
 	) => {
-		const currentChatId = chatId ?? await createChat("Alice");
-		if (!chatId)
-			await loadMessages(currentChatId);
+		const currentChatId = chatId ?? (await createChat(character.id));
+		if (!chatId) await loadMessages(currentChatId);
+
+		const userMessage: Message = {
+			role: Role.User,
+			text,
+			character, // User's message is associated with the selected character to know who it's directed to
+		};
+
+		setMessages((prev) => [...prev, userMessage]);
 
 		const res = await fetch(`/api/v1/chats/${currentChatId}/messages`, {
 			method: "POST",
@@ -110,11 +118,9 @@ export default function useChat() {
 			body: JSON.stringify({ text, params, character }),
 		});
 		const data = await res.json();
-		setMessages((prev) => [
-			...prev,
-			{ role: Role.User, text },
-			{ role: Role.Assistant, text: data.response },
-		]);
+
+		setMessages((prev) => [...prev, data.message]);
+		loadChats();
 	};
 
 	useEffect(() => {
