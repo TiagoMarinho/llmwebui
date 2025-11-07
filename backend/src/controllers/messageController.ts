@@ -22,6 +22,7 @@ export const getMessages = async (
 				{
 					model: Character,
 					as: "character",
+					paranoid: false,
 				},
 			],
 			order: [["createdAt", "ASC"]],
