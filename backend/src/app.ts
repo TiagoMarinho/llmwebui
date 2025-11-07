@@ -1,7 +1,7 @@
 import express from "express";
 import messageRoutes from "./routes/messageRoutes.ts";
 import chatRoutes from "./routes/chatRoutes.ts";
-import characterRoutes from "./routes/characterRoutes.ts"; // <-- 1. IMPORT THIS
+import characterRoutes from "./routes/characterRoutes.ts";
 
 const app = express();
 
