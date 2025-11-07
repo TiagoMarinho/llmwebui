@@ -67,7 +67,6 @@ export default function useCharacter() {
 
 			setCharacters((prev) => [...prev, newCharacter]);
 			setSelectedCharacter(newCharacter);
-			console.log(7)
 
 		} catch (err) {
 			alert(`Error: ${err instanceof Error ? err.message : "Unknown error"}`);
