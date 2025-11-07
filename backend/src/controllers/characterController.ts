@@ -37,7 +37,7 @@ export const createCharacter = async (
 	res: Response,
 ) => {
 	try {
-		let { name, description, avatarUrl, systemPrompt } = req.body;
+		let { name, description, avatarUrl, story } = req.body;
 
 		if (!name || typeof name !== "string" || !name.trim()) {
 			return res.status(400).json({ error: "Name is required" });
@@ -46,7 +46,7 @@ export const createCharacter = async (
 			name: name.trim(),
 			description: description?.trim() || null,
 			avatarUrl: avatarUrl?.trim() || null,
-			systemPrompt: systemPrompt?.trim() || null,
+			story: story?.trim() || null,
 		});
 		res.status(201).json({ character });
 	} catch (err) {
@@ -84,10 +84,10 @@ export const updateCharacter = async (
 					: null;
 		}
 
-		if (characterData.systemPrompt !== undefined) {
-			character.systemPrompt =
-				typeof characterData.systemPrompt === "string" && characterData.systemPrompt.trim()
-					? characterData.systemPrompt.trim()
+		if (characterData.story !== undefined) {
+			character.story =
+				typeof characterData.story === "string" && characterData.story.trim()
+					? characterData.story.trim()
 					: null;
 		}
 		await character.update(characterData);

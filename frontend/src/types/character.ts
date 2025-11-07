@@ -3,5 +3,5 @@ export interface Character {
 	name: string;
 	description?: string | null;
 	avatarUrl?: string | null;
-	systemPrompt?: string | null;
+	story?: string | null;
 }

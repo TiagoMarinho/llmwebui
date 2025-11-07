@@ -49,10 +49,10 @@ export default function CharacterForm({
 				/>
 			</label>
 			<label className="block mb-3">
-				System Prompt:
+				Story:
 				<textarea
-					name="systemPrompt"
-					value={formData.systemPrompt || ""}
+					name="story"
+					value={formData.story || ""}
 					onChange={onFormChange}
 					className={`${inputBaseClasses} h-48`}
 				/>

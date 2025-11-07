@@ -3,6 +3,6 @@ export interface CharacterAttributes {
 	name: string;
 	description?: string | null;
 	avatarUrl?: string | null;
-	systemPrompt?: string | null;
+	story?: string | null;
 	deletedAt?: Date | null;
 }

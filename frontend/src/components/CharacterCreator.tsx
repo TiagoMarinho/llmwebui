@@ -16,7 +16,7 @@ export default function CharacterCreator({
 		name: "",
 		description: "",
 		avatarUrl: "",
-		systemPrompt: "",
+		story: "",
 	});
 
 	const handleChange = (
