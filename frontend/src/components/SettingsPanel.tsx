@@ -27,9 +27,9 @@ export default function SettingsPanel({
 
 	return (
 		<div className="w-[20%] max-w-[280px] shrink-0 p-6 overflow-y-auto bg-panel border-r border-border">
-			<h2 className="mb-4">Settings</h2>
+			<h2 className="mb-4 text-lg">Settings</h2>
 
-			<label className="block mb-4">
+			<label className="block mb-4 font-medium text-sm">
 				Temperature:
 				<input
 					type="number"
@@ -39,11 +39,11 @@ export default function SettingsPanel({
 					name="temperature"
 					value={params?.temperature}
 					onChange={handleChange}
-					className="w-full mt-1 mb-2"
+					className="w-full mt-1 mb-2 rounded-md px-3 py-2"
 				/>
 			</label>
 
-			<label className="block mb-4">
+			<label className="block mb-4 font-medium text-sm">
 				Character:
 				<select
 					value={selectedCharacter}

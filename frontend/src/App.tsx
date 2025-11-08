@@ -42,6 +42,7 @@ export default function App() {
 			<>
 				<Sidebar
 					history={history}
+					selectedChatId={chatId}
 					onSelectChat={(id) => loadMessages(id)}
 					onNewChat={() => createChat(selectedCharacter)}
 					onDeleteChat={(id) => deleteChat(id)}

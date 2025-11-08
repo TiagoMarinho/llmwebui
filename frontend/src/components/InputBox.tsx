@@ -1,3 +1,4 @@
+import { SendHorizonal } from "lucide-react";
 import { useState } from "react";
 
 export default function InputBox({
@@ -24,7 +25,7 @@ export default function InputBox({
 				className="flex-1 rounded-xl"
 			/>
 			<button type="submit" className="rounded-xl">
-				Send
+				<SendHorizonal size={20} />
 			</button>
 		</form>
 	);
