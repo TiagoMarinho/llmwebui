@@ -45,7 +45,7 @@ export default function SettingsPanel({
 					type="number"
 					step="0.1"
 					min="0"
-					max="1"
+					max="2"
 					name="temperature"
 					value={params?.temperature}
 					onChange={handleChange}

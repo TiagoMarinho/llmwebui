@@ -29,7 +29,7 @@ export default class SettingsProfile
 				settings: {
 					type: DataTypes.JSON,
 					allowNull: false,
-					defaultValue: { temperature: 0.5 },
+					defaultValue: { temperature: 1.0 },
 				},
 			},
 			{
