@@ -25,41 +25,22 @@ export default function SettingsPanel({
 	setView,
 }: SettingsPanelProps) {
 	const [tempInput, setTempInput] = useState("");
-	const [isEditing, setIsEditing] = useState(false);
 
 	useEffect(() => {
-		if (!isEditing) {
-			setTempInput(params?.temperature?.toString() || "");
-		}
-	}, [params?.temperature, isEditing]);
+		setTempInput(params?.temperature?.toString() || "");
+	}, [params?.temperature]);
 
 	const handleTempChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value;
-
-		const validChars = value
-			.split("")
-			.every((char) => (char >= "0" && char <= "9") || char === ".");
-		const decimalPoints = value.split(".").length - 1;
-
-		if (validChars && decimalPoints <= 1) {
-			setTempInput(value);
-
-			const num = parseFloat(value);
-			if (!isNaN(num)) {
-				const newSettings = {
-					...params,
-					temperature: num,
-				};
-				setParams(newSettings);
-				saveSettings(newSettings);
-			}
-		}
+		setTempInput(e.target.value);
 	};
 
 	const handleTempBlur = () => {
-		setIsEditing(false);
-		const num = parseFloat(tempInput);
-		if (isNaN(num)) {
+		const parsed = parseFloat(tempInput);
+		if (!isNaN(parsed)) {
+			const newSettings = { ...params, temperature: parsed };
+			setParams(newSettings);
+			saveSettings(newSettings);
+		} else {
 			setTempInput(params?.temperature?.toString() || "");
 		}
 	};
@@ -83,7 +64,6 @@ export default function SettingsPanel({
 					name="temperature"
 					value={tempInput}
 					onChange={handleTempChange}
-					onFocus={() => setIsEditing(true)}
 					onBlur={handleTempBlur}
 					className="w-full mt-1 mb-2"
 				/>
