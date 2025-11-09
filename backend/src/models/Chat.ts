@@ -7,7 +7,6 @@ export default class Chat
 {
 	public id!: number;
 	public title!: string;
-	public character!: string;
 
 	public readonly createdAt!: Date;
 	public readonly updatedAt!: Date;
@@ -24,11 +23,6 @@ export default class Chat
 					type: DataTypes.STRING,
 					allowNull: false,
 					defaultValue: "Untitled Chat",
-				},
-				character: {
-					type: DataTypes.STRING,
-					allowNull: false,
-					defaultValue: "default",
 				},
 			},
 			{
