@@ -36,13 +36,15 @@ export default function SettingsPanel({
 
 	const handleTempBlur = () => {
 		const parsed = parseFloat(tempInput);
-		if (!isNaN(parsed)) {
-			const newSettings = { ...params, temperature: parsed };
-			setParams(newSettings);
-			saveSettings(newSettings);
-		} else {
+
+		if (isNaN(parsed)) {
 			setTempInput(params?.temperature?.toString() || "");
+			return;
 		}
+
+		const newSettings = { ...params, temperature: parsed };
+		setParams(newSettings);
+		saveSettings(newSettings);
 	};
 
 	const handleCharacterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
