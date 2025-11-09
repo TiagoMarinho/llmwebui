@@ -36,13 +36,19 @@ export default function SettingsPanel({
 	const handleTempChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
 
-		if (/^\d*\.?\d*$|^\.\d*$/.test(value)) {
+		const validChars = value
+			.split("")
+			.every((char) => (char >= "0" && char <= "9") || char === ".");
+		const decimalPoints = value.split(".").length - 1;
+
+		if (validChars && decimalPoints <= 1) {
 			setTempInput(value);
 
-			if (/^(\d+(\.\d+)?|\.\d+)$/.test(value)) {
+			const num = parseFloat(value);
+			if (!isNaN(num)) {
 				const newSettings = {
 					...params,
-					temperature: parseFloat(value),
+					temperature: num,
 				};
 				setParams(newSettings);
 				saveSettings(newSettings);
@@ -52,7 +58,8 @@ export default function SettingsPanel({
 
 	const handleTempBlur = () => {
 		setIsEditing(false);
-		if (!/^(\d+(\.\d+)?|\.\d+)$/.test(tempInput)) {
+		const num = parseFloat(tempInput);
+		if (isNaN(num)) {
 			setTempInput(params?.temperature?.toString() || "");
 		}
 	};
