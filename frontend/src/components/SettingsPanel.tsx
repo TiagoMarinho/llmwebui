@@ -1,3 +1,4 @@
+import { useEffect, useState, useRef } from "react";
 import { Settings } from "../hooks/useSettings";
 import { VIEW } from "../shared/view";
 import { Character } from "../types/character";
@@ -23,13 +24,55 @@ export default function SettingsPanel({
 	view,
 	setView,
 }: SettingsPanelProps) {
+	const [inputValue, setInputValue] = useState(
+		params?.temperature?.toString() || "",
+	);
+
+	const isEditingRef = useRef(false);
+
+	useEffect(() => {
+		if (isEditingRef.current) return;
+		setInputValue(params?.temperature?.toString() || "");
+	}, [params?.temperature]);
+
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const newSettings = {
-			...params,
-			[e.target.name]: parseFloat(e.target.value),
-		};
-		setParams(newSettings);
-		saveSettings(newSettings);
+		const value = e.target.value;
+
+		if (/^\d*\.?\d*$|^\.\d*$/.test(value)) {
+			setInputValue(value);
+
+			const validNumberPattern = /^(\d+(\.\d+)?|\.\d+)$/;
+			if (validNumberPattern.test(value)) {
+				const parsed = parseFloat(value);
+				const newSettings = {
+					...params,
+					[e.target.name]: parsed,
+				};
+				setParams(newSettings);
+				saveSettings(newSettings);
+			}
+		}
+	};
+
+	const handleFocus = () => {
+		isEditingRef.current = true;
+	};
+
+	const handleBlur = () => {
+		isEditingRef.current = false;
+
+		const validNumberPattern = /^(\d+(\.\d+)?|\.\d+)$/;
+		if (validNumberPattern.test(inputValue)) {
+			const parsed = parseFloat(inputValue);
+			const newSettings = {
+				...params,
+				["temperature"]: parsed,
+			};
+			setParams(newSettings);
+			saveSettings(newSettings);
+		} else {
+			setInputValue(params?.temperature?.toString() || "");
+		}
 	};
 	const handleCharacterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		selectCharacter(Number(e.target.value));
@@ -46,9 +89,12 @@ export default function SettingsPanel({
 					step="0.1"
 					min="0"
 					max="2"
+					inputMode="decimal"
 					name="temperature"
-					value={params?.temperature}
+					value={inputValue}
 					onChange={handleChange}
+					onFocus={handleFocus}
+					onBlur={handleBlur}
 					className="w-full mt-1 mb-2"
 				/>
 			</label>
