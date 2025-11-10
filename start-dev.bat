@@ -4,3 +4,6 @@ start cmd /k "npm run dev"
 cd ..
 cd frontend
 start cmd /k "npm run dev"
+cd ..
+cd mock-llm-server
+start cmd /k "npm run dev"

@@ -1,18 +1,38 @@
-import { CharacterAttributes } from "../types";
-import {Params } from "../types/index";
+import { CharacterAttributes, Params } from "../types/index";
+
+interface MockResponse {
+	choices?: { message?: { content?: string } }[];
+}
+
+const MOCK_API_URL =
+	process.env.MOCK_API_URL || "http://localhost:3001/v1/chat/completions";
 
 const sendMessage = async (
 	text: string,
 	params: Params,
 	character: CharacterAttributes,
 ) => {
-	// Call OpenAI API or local LLM
-	const mockData = {
-		response: "Hello, world!",
-		params: '{"temperature": 0.7}',
-		character: character.name,
-	};
-	return mockData; // placeholder
+	try {
+		const response = await fetch(MOCK_API_URL, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				model: "mock-llm",
+				messages: [{ role: "user", content: text }],
+				stream: false,
+				temperature: params?.temperature ?? 0.7,
+			}),
+		});
+
+		const data = (await response.json()) as MockResponse;
+		const message =
+			data?.choices?.[0]?.message?.content ?? "Mock LLM Error";
+
+		return { response: message };
+	} catch (error) {
+		console.error("Mock LLM call failed:", error);
+		return { response: "Mock LLM Unavailable" };
+	}
 };
 
 export default { sendMessage };
