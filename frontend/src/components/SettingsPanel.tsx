@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Settings } from "../hooks/useSettings";
 import { VIEW } from "../shared/view";
 import { Character } from "../types/character";
@@ -5,6 +6,7 @@ import { Character } from "../types/character";
 interface SettingsPanelProps {
 	params: Settings;
 	setParams: (params: Settings) => void;
+	saveSettings: (params: Settings) => void;
 	characters: Character[];
 	selectedCharacter: Character | null;
 	selectCharacter: (id: number) => void;
@@ -15,15 +17,36 @@ interface SettingsPanelProps {
 export default function SettingsPanel({
 	params,
 	setParams,
+	saveSettings,
 	characters,
 	selectedCharacter,
 	selectCharacter,
 	view,
 	setView,
 }: SettingsPanelProps) {
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setParams({ ...params, [e.target.name]: parseFloat(e.target.value) });
+	const [tempInput, setTempInput] = useState("");
+
+	useEffect(() => {
+		setTempInput(params?.temperature?.toString() || "");
+	}, [params?.temperature]);
+
+	const handleTempChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setTempInput(e.target.value);
 	};
+
+	const handleTempBlur = () => {
+		const parsed = parseFloat(tempInput);
+
+		if (isNaN(parsed)) {
+			setTempInput(params?.temperature?.toString() || "");
+			return;
+		}
+
+		const newSettings = { ...params, temperature: parsed };
+		setParams(newSettings);
+		saveSettings(newSettings);
+	};
+
 	const handleCharacterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		selectCharacter(Number(e.target.value));
 	};
@@ -38,10 +61,12 @@ export default function SettingsPanel({
 					type="number"
 					step="0.1"
 					min="0"
-					max="1"
+					max="2"
+					inputMode="decimal"
 					name="temperature"
-					value={params?.temperature}
-					onChange={handleChange}
+					value={tempInput}
+					onChange={handleTempChange}
+					onBlur={handleTempBlur}
 					className="w-full mt-1 mb-2"
 				/>
 			</label>

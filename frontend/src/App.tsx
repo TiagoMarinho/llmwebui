@@ -43,7 +43,7 @@ export default function App() {
 		deleteCharacter,
 	} = useCharacter();
 
-	const { params, setParams } = useSettings();
+	const { params, setParams, saveSettings } = useSettings();
 
 	const handleCreateChat = () => {
 		if (selectedCharacter) {
@@ -99,6 +99,7 @@ export default function App() {
 			<SettingsPanel
 				params={params}
 				setParams={setParams}
+				saveSettings={saveSettings}
 				characters={characters}
 				selectedCharacter={selectedCharacter}
 				selectCharacter={selectCharacter}
