@@ -1,11 +1,15 @@
+import { useEffect, useState } from "react";
 import { Settings } from "../hooks/useSettings";
 import { VIEW } from "../shared/view";
+import { Character } from "../types/character";
 
 interface SettingsPanelProps {
 	params: Settings;
 	setParams: (params: Settings) => void;
-	selectedCharacter: string;
-	setSelectedCharacter: (character: string) => void;
+	saveSettings: (params: Settings) => void;
+	characters: Character[];
+	selectedCharacter: Character | null;
+	selectCharacter: (id: number) => void;
 	view: string;
 	setView: (view: VIEW) => void;
 }
@@ -13,16 +17,38 @@ interface SettingsPanelProps {
 export default function SettingsPanel({
 	params,
 	setParams,
+	saveSettings,
+	characters,
 	selectedCharacter,
-	setSelectedCharacter,
+	selectCharacter,
 	view,
 	setView,
 }: SettingsPanelProps) {
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setParams({ ...params, [e.target.name]: parseFloat(e.target.value) });
+	const [tempInput, setTempInput] = useState("");
+
+	useEffect(() => {
+		setTempInput(params?.temperature?.toString() || "");
+	}, [params?.temperature]);
+
+	const handleTempChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setTempInput(e.target.value);
 	};
+
+	const handleTempBlur = () => {
+		const parsed = parseFloat(tempInput);
+
+		if (isNaN(parsed)) {
+			setTempInput(params?.temperature?.toString() || "");
+			return;
+		}
+
+		const newSettings = { ...params, temperature: parsed };
+		setParams(newSettings);
+		saveSettings(newSettings);
+	};
+
 	const handleCharacterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		setSelectedCharacter(e.target.value);
+		selectCharacter(Number(e.target.value));
 	};
 
 	return (
@@ -35,10 +61,12 @@ export default function SettingsPanel({
 					type="number"
 					step="0.1"
 					min="0"
-					max="1"
+					max="2"
+					inputMode="decimal"
 					name="temperature"
-					value={params?.temperature}
-					onChange={handleChange}
+					value={tempInput}
+					onChange={handleTempChange}
+					onBlur={handleTempBlur}
 					className="w-full mt-1 mb-2"
 				/>
 			</label>
@@ -46,31 +74,48 @@ export default function SettingsPanel({
 			<label className="block mb-4">
 				Character:
 				<select
-					value={selectedCharacter}
+					value={selectedCharacter?.id || ""}
 					onChange={handleCharacterChange}
 					className="w-full mt-1 mb-2"
+					disabled={characters.length === 0}
 				>
-					<option value="Alice">Alice</option>
-					<option value="Bob">Bob</option>
-					<option value="Charlie">Charlie</option>
+					{characters.length === 0 ? (
+						<option>No characters found</option>
+					) : (
+						characters.map((character) => (
+							<option key={character.id} value={character.id}>
+								{character.name}
+							</option>
+						))
+					)}
 				</select>
 			</label>
 
-			{view === "chat" ? (
+			<div className="space-y-4">
 				<button
-					onClick={() => setView(VIEW.CHARACTER_EDITOR)}
-					className="w-full mt-4"
+					onClick={() => setView(VIEW.CHARACTER_CREATOR)}
+					className="w-full"
 				>
-					Edit Character
+					+ New Character
 				</button>
-			) : (
-				<button
-					onClick={() => setView(VIEW.CHAT)}
-					className="w-full mt-4"
-				>
-					← Back to Chat
-				</button>
-			)}
+
+				{view === "chat" ? (
+					<button
+						onClick={() => setView(VIEW.CHARACTER_EDITOR)}
+						className="w-full"
+						disabled={!selectedCharacter}
+					>
+						Edit Character
+					</button>
+				) : (
+					<button
+						onClick={() => setView(VIEW.CHAT)}
+						className="w-full"
+					>
+						← Back to Chat
+					</button>
+				)}
+			</div>
 		</div>
 	);
 }

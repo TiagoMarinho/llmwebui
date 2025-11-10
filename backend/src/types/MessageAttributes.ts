@@ -1,10 +1,9 @@
-import { Character } from "./Character";
-import { Role } from "./Role";
+import { Role } from "./Role.ts";
 
 export interface MessageAttributes {
 	id?: number;
 	chatId: number;
-	character: Character;
+	characterId: number;
 	role: Role;
 	text: string;
 	metadata?: object | null;

@@ -10,7 +10,7 @@ const MOCK_API_URL =
 const sendMessage = async (
 	text: string,
 	params: Params,
-	character: Character,
+	character: CharacterAttributes,
 ) => {
 	try {
 		const response = await fetch(MOCK_API_URL, {
