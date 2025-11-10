@@ -1,29 +1,8 @@
-export const mockResponses = {
-	default: "Hello! How can I assist you today?",
+import responses from "./responses.json" with { type: "json" };
 
-	characters: {
-		Alice: "Hi there! I'm Alice, Klee's mom. How can I help you?",
-		Bob: "Hey! I'm Bob, the builder! What do you need?",
-		Charlie: "Greetings! I'm Charlie, Lola's Brother. Ask me anything!",
-	} as {
-		[character: string]: string;
-	},
-};
-
-export function getMockResponse(character: string | string[]): string {
-	if (Array.isArray(character)) {
-		const responses = character.map(
-			(char) =>
-				`[${char}]: ${mockResponses.characters[char] || mockResponses.default}`,
-		);
-		return responses.join("\n\n") || mockResponses.default;
-	}
-
-	if (character in mockResponses.characters) {
-		return `[${character}]: ${mockResponses.characters[character]}`;
-	}
-
-	return `[Assistant]: ${mockResponses.default}`;
+export function getMockResponse(): string {
+	const randomIndex = Math.floor(Math.random() * responses.length);
+	return responses[randomIndex];
 }
 
 export function splitIntoChunks(text: string): string[] {

@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { getMockResponse, splitIntoChunks } from "./responses.ts";
 
 export async function handleChatRequest(req: Request, res: Response) {
-	const { stream, character } = req.body;
+	const { stream } = req.body;
 
-	const mockText = getMockResponse(character as string);
+	const mockText = getMockResponse();
 
 	if (stream) {
 		res.setHeader("Content-Type", "text/event-stream");
