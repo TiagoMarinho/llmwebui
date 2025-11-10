@@ -1,11 +1,11 @@
-import { Character, Params } from "../types/index";
+import { CharacterAttributes, Params } from "../types/index";
 
 interface MockResponse {
 	choices?: { message?: { content?: string } }[];
 }
 
 const MOCK_API_URL =
-	process.env.MOCK_API_URL || "http://localhost:3000/v1/chat/completions";
+	process.env.MOCK_API_URL || "http://localhost:3001/v1/chat/completions";
 
 const sendMessage = async (
 	text: string,
@@ -20,7 +20,6 @@ const sendMessage = async (
 				model: "mock-llm",
 				messages: [{ role: "user", content: text }],
 				stream: false,
-				character: character.name || character,
 				temperature: params?.temperature ?? 0.7,
 			}),
 		});
