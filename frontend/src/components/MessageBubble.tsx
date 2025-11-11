@@ -2,26 +2,43 @@ import { Role } from "../types/role";
 import { Message } from "../types/message";
 
 export default function MessageBubble({ message }: { message: Message }) {
-	const bubbleStyle =
-		message.role === Role.User
-			? { backgroundColor: "#6b4cff" }
-			: {
-					backgroundColor: "var(--color-input)",
-					borderColor: "var(--color-accent)",
-					border: "1px solid",
-				};
+	const isUser = message.role === Role.User;
 
-	const bubbleClass =
-		message.role === Role.User
-			? "text-white self-end"
-			: "text-[#e0e0f0] self-start";
+	if (isUser) {
+		return (
+			<div className="flex justify-end">
+				<div className="max-w-lg p-3 px-5 rounded-2xl wrap-break-words leading-relaxed bg-accent text-white max-h-96 overflow-y-auto">
+					{message.text}
+				</div>
+			</div>
+		);
+	}
+
+	const characterName = message.character ? message.character.name : "AI";
+	const avatarUrl = message.character ? message.character.avatarUrl : "";
+	const characterDescription = message.character?.description || "";
 
 	return (
-		<div
-			className={`max-w-[65%] p-3 px-5 rounded-2xl wrap-break-words leading-relaxed ${bubbleClass}`}
-			style={bubbleStyle}
-		>
-			{message.text}
+		<div className="flex items-start gap-3">
+			{avatarUrl && (
+				<img
+					src={avatarUrl}
+					alt={`${characterName}'s avatar`}
+					className="w-10 h-10 rounded-full"
+					title={characterDescription}
+				/>
+			)}
+			<div className="flex flex-col">
+             <span
+				 className="text-sm font-semibold mb-1"
+				 title={characterDescription}
+			 >
+                {characterName}
+             </span>
+				<div className="max-w-lg p-3 px-5 rounded-2xl wrap-break-words leading-relaxed bg-input text-text border border-border max-h-96 overflow-y-auto">
+					{message.text}
+				</div>
+			</div>
 		</div>
 	);
 }

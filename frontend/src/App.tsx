@@ -1,78 +1,98 @@
-import { useState, JSX } from "react";
+import { useState, useCallback } from "react";
 import { VIEW } from "./shared/view";
 
-import Sidebar from "./components/Sidebar";
-import ChatWindow from "./components/ChatWindow";
-import SettingsPanel from "./components/SettingsPanel";
+import ChatView from "./components/ChatView";
 import CharacterEditor from "./components/CharacterEditor";
+import CharacterCreator from "./components/CharacterCreator";
+
+import Sidebar from "./components/Sidebar";
+import SettingsPanel from "./components/SettingsPanel";
 import ThemeToggler from "./components/ThemeToggler";
 
 import useChat from "./hooks/useChat";
 import useCharacter from "./hooks/useCharacter";
 import useSettings from "./hooks/useSettings";
 
-type ViewComponent = () => JSX.Element;
-type ViewMap = {
-	[key: string]: ViewComponent;
-};
-
-function ViewRouter({ view, map }: { view: string; map: ViewMap }) {
-	const View = map[view];
-	return View ? <View /> : null;
-}
-
 export default function App() {
-	const [selectedCharacter, setSelectedCharacter] = useState("Alice");
 	const [view, setView] = useState(VIEW.CHAT);
 
 	const {
 		messages,
 		history,
-		chatId,
 		createChat,
 		deleteChat,
 		loadMessages,
 		sendMessage,
 	} = useChat();
-	const { characterData, saveCharacter } = useCharacter(selectedCharacter);
-	const { params, setParams } = useSettings();
 
-	const views = {
-		[VIEW.CHAT]: () => (
-			<>
-				<Sidebar
-					history={history}
-					selectedChatId={chatId}
-					onSelectChat={(id) => loadMessages(id)}
-					onNewChat={() => createChat(selectedCharacter)}
-					onDeleteChat={(id) => deleteChat(id)}
+	const {
+		characters,
+		selectedCharacter,
+		selectCharacter,
+		updateCharacter,
+		createCharacter,
+		deleteCharacter,
+	} = useCharacter();
+
+	const { params, setParams, saveSettings } = useSettings();
+
+	const handleCreateChat = () => {
+		if (selectedCharacter) createChat();
+	};
+
+	const handleSendMessage = useCallback(
+		(text: string) => {
+			if (selectedCharacter) {
+				sendMessage(text, params, selectedCharacter);
+			}
+		},
+		[sendMessage, params, selectedCharacter],
+	);
+
+	const renderCurrentView = () => {
+		const views = {
+			[VIEW.CHARACTER_EDITOR]: (
+				<CharacterEditor
+					selectedCharacter={selectedCharacter}
+					updateCharacter={updateCharacter}
+					deleteCharacter={deleteCharacter}
+					setView={setView}
 				/>
-				<ChatWindow
+			),
+			[VIEW.CHARACTER_CREATOR]: (
+				<CharacterCreator
+					createCharacter={createCharacter}
+					setView={setView}
+				/>
+			),
+			[VIEW.CHAT]: (
+				<ChatView
 					messages={messages}
-					onSend={(text: string) =>
-						sendMessage(text, params, selectedCharacter)
-					}
+					onSend={handleSendMessage}
 				/>
-			</>
-		),
-		[VIEW.CHARACTER_EDITOR]: () => (
-			<CharacterEditor
-				selectedCharacter={selectedCharacter}
-				saveCharacter={saveCharacter}
-				setView={setView}
-			/>
-		),
+			),
+		}
+		return views[view]
 	};
 
 	return (
 		<div className="flex h-screen w-screen">
-			<ViewRouter view={view} map={views} />
+			<Sidebar
+				history={history}
+				onSelectChat={loadMessages}
+				onNewChat={handleCreateChat}
+				onDeleteChat={deleteChat}
+			/>
+
+			{renderCurrentView()}
 
 			<SettingsPanel
 				params={params}
 				setParams={setParams}
+				saveSettings={saveSettings}
+				characters={characters}
 				selectedCharacter={selectedCharacter}
-				setSelectedCharacter={setSelectedCharacter}
+				selectCharacter={selectCharacter}
 				view={view}
 				setView={setView}
 			/>

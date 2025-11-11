@@ -3,6 +3,7 @@ import { Message } from "../types/message";
 import { Role } from "../types/role";
 import { Settings } from "./useSettings";
 import { Chat } from "../types/chat";
+import { Character } from "../types/character";
 
 export default function useChat() {
 	const [messages, setMessages] = useState<Message[]>([]);
@@ -16,8 +17,7 @@ export default function useChat() {
 			const chats: Chat[] = data.chats || [];
 			setHistory(chats);
 
-			if (chats.length === 0)
-				return;
+			if (chats.length === 0) return;
 
 			const latestChatId = chats[0].id;
 			await loadMessages(latestChatId);
@@ -27,18 +27,17 @@ export default function useChat() {
 		}
 	};
 
-	const createChat = async (character = "default") => {
-		// Step 1: Create the chat with a temporary title
+	const createChat = async () => {
 		const createRes = await fetch("/api/v1/chats", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ title: "New Chat...", character }), // Placeholder title
+			body: JSON.stringify({ title: "New Chat..." }),
 		});
 		const createData = await createRes.json();
 		const newChat = createData.chat;
 		const newChatId = newChat.id;
 
-		// Step 2: Immediately update the chat with the desired title
+
 		const finalTitle = `Chat #${newChatId}`;
 		await fetch(`/api/v1/chats/${newChatId}`, {
 			method: "PUT",
@@ -46,9 +45,8 @@ export default function useChat() {
 			body: JSON.stringify({ title: finalTitle }),
 		});
 
-		// Step 3: Refresh state and set the new chat as active
 		setChatId(newChatId);
-		await loadChats(); // Refreshes the history list with the final title
+		await loadChats();
 		setMessages([]);
 		return newChatId;
 	};
@@ -70,8 +68,8 @@ export default function useChat() {
 			const nextChatId =
 				updatedHistory[currentIndex]?.id ||
 				updatedHistory[currentIndex - 1]?.id ||
-				updatedHistory[0]?.id || 
-				null
+				updatedHistory[0]?.id ||
+				null;
 
 			setChatId(nextChatId);
 			await loadMessages(nextChatId);
@@ -98,23 +96,73 @@ export default function useChat() {
 	const sendMessage = async (
 		text: string,
 		params: Settings,
-		character: string,
+		character: Character,
 	) => {
-		const currentChatId = chatId ?? await createChat("Alice");
-		if (!chatId)
-			await loadMessages(currentChatId);
+		const currentChatId = chatId ?? (await createChat());
+		if (!chatId) await loadMessages(currentChatId);
+
+		const userMessage: Message = {
+			role: Role.User,
+			text,
+			character,
+		};
+		setMessages((prev) => [...prev, userMessage]);
 
 		const res = await fetch(`/api/v1/chats/${currentChatId}/messages`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ text, params, character }),
 		});
-		const data = await res.json();
-		setMessages((prev) => [
-			...prev,
-			{ role: Role.User, text },
-			{ role: Role.Assistant, text: data.response },
-		]);
+
+		if (!res.body) return;
+		const reader = res.body.getReader();
+		const decoder = new TextDecoder();
+
+		const assistantMessage: Message = {
+			id: crypto.randomUUID(),
+			role: Role.Assistant,
+			text: "",
+			character,
+		};
+		setMessages((prev) => [...prev, assistantMessage]);
+
+		let buffer = "";
+		const processStream = async () => {
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) {
+					await loadChats();
+					break;
+				}
+
+				buffer += decoder.decode(value, { stream: true });
+				const lines = buffer.split("\n");
+				buffer = lines.pop() || "";
+
+				for (const line of lines) {
+					if (!line.startsWith("data: ")) continue;
+
+					const jsonStr = line.substring(5).trim();
+					if (jsonStr === "[DONE]") continue;
+
+					try {
+						const parsed = JSON.parse(jsonStr);
+						const content = parsed.choices?.[0]?.delta?.content || "";
+
+						setMessages((prev) =>
+							prev.map((msg) =>
+								msg.id === assistantMessage.id
+									? { ...msg, text: msg.text + content }
+									: msg,
+							),
+						);
+					} catch (error) {
+						console.error("Failed to parse stream chunk:", error);
+					}
+				}
+			}
+		};
+		await processStream();
 	};
 
 	useEffect(() => {
