@@ -2,7 +2,7 @@
 
 @theme {
 	--color-bg: #0a0a0f;
-	--color-panel: #12121a;
+	--color-panel: #242533;
 	--color-chat: #14141f;
 	--color-accent: #d8b4ff;
 	--color-input: #1c1c28;
@@ -52,13 +52,28 @@
 
 	button {
 		@apply rounded-xl border border-transparent px-5 py-2.5 text-base font-medium 
-           bg-accent text-bg cursor-pointer transition-all duration-300;
+         bg-accent text-bg cursor-pointer transition-all duration-200;
 		box-shadow: var(--shadow-custom);
 	}
 
 	button:hover {
-		@apply bg-[#c299ff] -translate-y-px;
+		@apply bg-[#c299ff] -translate-y-0.5;
 		box-shadow: var(--shadow-custom-hover);
+	}
+
+	button:active {
+		@apply translate-y-0 bg-[#b388ee];
+		box-shadow: var(--shadow-custom);
+		transition-duration: 100ms;
+	}
+
+	button:focus-visible {
+		@apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
+	}
+
+	button:disabled {
+		@apply opacity-50 cursor-not-allowed translate-y-0;
+		box-shadow: var(--shadow-custom);
 	}
 
 	input,
@@ -89,4 +104,8 @@
 		background-color: var(--color-accent);
 		border-radius: 0.25rem;
 	}
+}
+
+.history {
+	scrollbar-width: none;
 }

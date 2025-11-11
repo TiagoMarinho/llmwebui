@@ -20,5 +20,8 @@
 		"nodemon": "^3.1.10",
 		"prettier": "^3.6.2",
 		"ts-node": "^10.9.2"
+	},
+	"dependencies": {
+		"lucide-react": "^0.553.0"
 	}
 }
