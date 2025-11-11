@@ -102,6 +102,7 @@ export default function useChat() {
 		if (!chatId) await loadMessages(currentChatId);
 
 		const userMessage: Message = {
+			id: crypto.randomUUID(),
 			role: Role.User,
 			text,
 			character,
