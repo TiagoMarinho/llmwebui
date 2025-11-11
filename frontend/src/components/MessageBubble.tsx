@@ -7,7 +7,7 @@ export default function MessageBubble({ message }: { message: Message }) {
 	if (isUser) {
 		return (
 			<div className="flex justify-end">
-				<div className="max-w-lg p-3 px-5 rounded-2xl break-words leading-relaxed bg-accent text-white max-h-96 overflow-y-auto">
+				<div className="max-w-lg p-3 px-5 rounded-2xl wrap-break-words leading-relaxed bg-accent text-white max-h-96 overflow-y-auto">
 					{message.text}
 				</div>
 			</div>
@@ -35,7 +35,7 @@ export default function MessageBubble({ message }: { message: Message }) {
 			 >
                 {characterName}
              </span>
-				<div className="max-w-lg p-3 px-5 rounded-2xl break-words leading-relaxed bg-input text-text border border-border max-h-96 overflow-y-auto">
+				<div className="max-w-lg p-3 px-5 rounded-2xl wrap-break-words leading-relaxed bg-input text-text border border-border max-h-96 overflow-y-auto">
 					{message.text}
 				</div>
 			</div>

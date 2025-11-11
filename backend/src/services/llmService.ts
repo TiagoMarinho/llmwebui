@@ -19,19 +19,21 @@ const sendMessage = async (
 			body: JSON.stringify({
 				model: "mock-llm",
 				messages: [{ role: "user", content: text }],
-				stream: false,
+				stream: true,
 				temperature: params?.temperature ?? 0.7,
 			}),
 		});
 
-		const data = (await response.json()) as MockResponse;
-		const message =
-			data?.choices?.[0]?.message?.content ?? "Mock LLM Error";
+		return response.body;
 
-		return { response: message };
 	} catch (error) {
 		console.error("Mock LLM call failed:", error);
-		return { response: "Mock LLM Unavailable" };
+		return new ReadableStream({
+			start(controller) {
+				controller.enqueue("Mock LLM Unavailable");
+				controller.close();
+			}
+		})
 	}
 };
 

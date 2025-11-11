@@ -28,18 +28,16 @@ export default function useChat() {
 	};
 
 	const createChat = async () => {
-		// Step 1: Create the chat with a temporary title
 		const createRes = await fetch("/api/v1/chats", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ title: "New Chat..." }), // Placeholder title
+			body: JSON.stringify({ title: "New Chat..." }),
 		});
 		const createData = await createRes.json();
 		const newChat = createData.chat;
 		const newChatId = newChat.id;
 
 
-		// Step 2: Immediately update the chat with the desired title
 		const finalTitle = `Chat #${newChatId}`;
 		await fetch(`/api/v1/chats/${newChatId}`, {
 			method: "PUT",
@@ -47,9 +45,8 @@ export default function useChat() {
 			body: JSON.stringify({ title: finalTitle }),
 		});
 
-		// Step 3: Refresh state and set the new chat as active
 		setChatId(newChatId);
-		await loadChats(); // Refreshes the history list with the final title
+		await loadChats();
 		setMessages([]);
 		return newChatId;
 	};
@@ -107,9 +104,8 @@ export default function useChat() {
 		const userMessage: Message = {
 			role: Role.User,
 			text,
-			character, // User's message is associated with the selected character to know who it's directed to
+			character,
 		};
-
 		setMessages((prev) => [...prev, userMessage]);
 
 		const res = await fetch(`/api/v1/chats/${currentChatId}/messages`, {
@@ -117,10 +113,56 @@ export default function useChat() {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ text, params, character }),
 		});
-		const data = await res.json();
 
-		setMessages((prev) => [...prev, data.message]);
-		loadChats();
+		if (!res.body) return;
+		const reader = res.body.getReader();
+		const decoder = new TextDecoder();
+
+		const assistantMessage: Message = {
+			id: crypto.randomUUID(),
+			role: Role.Assistant,
+			text: "",
+			character,
+		};
+		setMessages((prev) => [...prev, assistantMessage]);
+
+		let buffer = "";
+		const processStream = async () => {
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) {
+					await loadChats();
+					break;
+				}
+
+				buffer += decoder.decode(value, { stream: true });
+				const lines = buffer.split("\n");
+				buffer = lines.pop() || "";
+
+				for (const line of lines) {
+					if (!line.startsWith("data: ")) continue;
+
+					const jsonStr = line.substring(5).trim();
+					if (jsonStr === "[DONE]") continue;
+
+					try {
+						const parsed = JSON.parse(jsonStr);
+						const content = parsed.choices?.[0]?.delta?.content || "";
+
+						setMessages((prev) =>
+							prev.map((msg) =>
+								msg.id === assistantMessage.id
+									? { ...msg, text: msg.text + content }
+									: msg,
+							),
+						);
+					} catch (error) {
+						console.error("Failed to parse stream chunk:", error);
+					}
+				}
+			}
+		};
+		await processStream();
 	};
 
 	useEffect(() => {

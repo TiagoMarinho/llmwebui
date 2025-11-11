@@ -6,6 +6,7 @@ import { Request, Response } from "express";
 import { getErrorMessage } from "../utils/getErrorMessage.ts";
 import { Role } from "../types/Role.ts";
 import Character from "../models/Character.ts";
+import { Readable } from "stream";
 
 export const getMessages = async (
 	req: Request<MessageAttributes>,
@@ -61,43 +62,68 @@ export const getMessageById = async (
 };
 
 export const sendMessage = async (
-	req: Request<MessageAttributes>,
+	req: Request,
 	res: Response,
 ) => {
 	try {
-		const { chatId } = req.params;
+		const chatId = parseInt(req.params.chatId, 10);
+		if (isNaN(chatId)) {
+			return res.status(400).json({ error: "Invalid Chat ID" });
+		}
+
 		const { text, params, character } = req.body;
-		const userMessage = await Message.create({
+
+		await Message.create({
 			text,
 			role: Role.User,
 			characterId: character.id,
 			chatId,
 		});
+
 		await Chat.update({}, { where: { id: chatId }, silent: false });
 
-		const llmResponse = await llmService.sendMessage(
-			text,
-			params,
-			character,
-		);
+		const llmStream = await llmService.sendMessage(text, params, character);
 
-		const assistantMessage = await Message.create({
-			text: llmResponse.response,
-			role: Role.Assistant,
-			characterId: character.id,
-			chatId,
+		res.setHeader("Content-Type", "text/event-stream");
+		res.setHeader("Cache-Control", "no-cache");
+		res.setHeader("Connection", "keep-alive");
+
+		const stream = Readable.fromWeb(llmStream as any);
+		let llmResponseText = "";
+		const decoder = new TextDecoder();
+
+		stream.on('data', (chunk) => {
+			res.write(chunk);
+			llmResponseText += decoder.decode(chunk);
 		});
 
-		const messageWithCharacter = await Message.findByPk(assistantMessage.id, {
-			include: [
-				{
-					model: Character,
-					as: "character",
-				},
-			],
+		stream.on('end', async () => {
+			const cleanText = llmResponseText
+				.split('\n')
+				.filter(line => line.startsWith('data: '))
+				.map(line => {
+					const jsonStr = line.replace('data: ', '').trim();
+					if (jsonStr === '[DONE]') return null;
+					try {
+						return JSON.parse(jsonStr).choices[0].delta.content;
+					} catch {
+						return null;
+					}
+				})
+				.filter(Boolean)
+				.join('');
+
+			if (cleanText) {
+				await Message.create({
+					text: cleanText,
+					role: Role.Assistant,
+					characterId: character.id,
+					chatId,
+				});
+			}
+			res.end();
 		});
 
-		res.json({ message: messageWithCharacter });
 	} catch (err) {
 		res.status(500).json({ error: getErrorMessage(err) });
 	}
