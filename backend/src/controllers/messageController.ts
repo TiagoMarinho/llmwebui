@@ -123,7 +123,40 @@ export const sendMessage = async (
 			}
 			res.end();
 		});
+export const updateMessage = async (req: Request, res: Response) => {
+	try {
+		const { chatId, id } = req.params;
+		if (!chatId)
+			return res.status(400).json({ error: "chatId is required" });
 
+		const message = await Message.findByPk(id);
+		if (!message)
+			return res.status(404).json({ error: "Message not found" });
+
+		const { text } = req.body;
+
+		message.text = text;
+		await message.save();
+
+		res.json({ message });
+	} catch (err) {
+		res.status(500).json({ error: getErrorMessage(err) });
+	}
+};
+
+export const deleteMessage = async (req: Request, res: Response) => {
+	try {
+		const { chatId, id } = req.params;
+		if (!chatId)
+			return res.status(400).json({ error: "chatId is required" });
+
+		const message = await Message.findByPk(id);
+		if (!message)
+			return res.status(404).json({ error: "Message not found" });
+
+		await message.destroy();
+
+		res.status(200).json({ message });
 	} catch (err) {
 		res.status(500).json({ error: getErrorMessage(err) });
 	}
