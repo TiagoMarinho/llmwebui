@@ -37,7 +37,6 @@ export default function useChat() {
 		const newChat = createData.chat;
 		const newChatId = newChat.id;
 
-
 		const finalTitle = `Chat #${newChatId}`;
 		await fetch(`/api/v1/chats/${newChatId}`, {
 			method: "PUT",
@@ -165,6 +164,10 @@ export default function useChat() {
 		};
 		await processStream();
 	};
+
+	const editMessage = async (id: string, text: string) => {};
+
+	const deleteMessage = async (id: string) => {};
 
 	useEffect(() => {
 		loadChats();
