@@ -1,7 +1,17 @@
 import { Role } from "../types/role";
 import { Message } from "../types/message";
 
-export default function MessageBubble({ message }: { message: Message }) {
+interface MessageBubbleProps {
+	message: Message;
+	onEdit: (message: Message) => void;
+	onDelete: (message: Message) => void;
+}
+
+export default function MessageBubble({
+	message,
+	onEdit,
+	onDelete,
+}: MessageBubbleProps) {
 	const isUser = message.role === Role.User;
 
 	if (isUser) {
@@ -29,14 +39,18 @@ export default function MessageBubble({ message }: { message: Message }) {
 				/>
 			)}
 			<div className="flex flex-col">
-             <span
-				 className="text-sm font-semibold mb-1"
-				 title={characterDescription}
-			 >
-                {characterName}
-             </span>
+				<span
+					className="text-sm font-semibold mb-1"
+					title={characterDescription}
+				>
+					{characterName}
+				</span>
 				<div className="max-w-lg p-3 px-5 rounded-2xl wrap-break-words leading-relaxed bg-input text-text border border-border max-h-96 overflow-y-auto">
 					{message.text}
+				</div>
+				<div className="opacity-0 group-hover:opacity-100 flex gap-1">
+					<button onClick={() => onEdit(message)}>Edit</button>
+					<button onClick={() => onDelete(message)}>Delete</button>
 				</div>
 			</div>
 		</div>
