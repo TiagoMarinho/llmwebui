@@ -61,10 +61,7 @@ export const getMessageById = async (
 	}
 };
 
-export const sendMessage = async (
-	req: Request,
-	res: Response,
-) => {
+export const sendMessage = async (req: Request, res: Response) => {
 	try {
 		const chatId = parseInt(req.params.chatId, 10);
 		if (isNaN(chatId)) {
@@ -92,18 +89,18 @@ export const sendMessage = async (
 		let llmResponseText = "";
 		const decoder = new TextDecoder();
 
-		stream.on('data', (chunk) => {
+		stream.on("data", (chunk) => {
 			res.write(chunk);
 			llmResponseText += decoder.decode(chunk);
 		});
 
-		stream.on('end', async () => {
+		stream.on("end", async () => {
 			const cleanText = llmResponseText
-				.split('\n')
-				.filter(line => line.startsWith('data: '))
-				.map(line => {
-					const jsonStr = line.replace('data: ', '').trim();
-					if (jsonStr === '[DONE]') return null;
+				.split("\n")
+				.filter((line) => line.startsWith("data: "))
+				.map((line) => {
+					const jsonStr = line.replace("data: ", "").trim();
+					if (jsonStr === "[DONE]") return null;
 					try {
 						return JSON.parse(jsonStr).choices[0].delta.content;
 					} catch {
@@ -111,7 +108,7 @@ export const sendMessage = async (
 					}
 				})
 				.filter(Boolean)
-				.join('');
+				.join("");
 
 			if (cleanText) {
 				await Message.create({
@@ -123,6 +120,11 @@ export const sendMessage = async (
 			}
 			res.end();
 		});
+	} catch (err) {
+		res.status(500).json({ error: getErrorMessage(err) });
+	}
+};
+
 export const updateMessage = async (req: Request, res: Response) => {
 	try {
 		const { chatId, id } = req.params;
