@@ -23,6 +23,8 @@ export default function App() {
 		deleteChat,
 		loadMessages,
 		sendMessage,
+		editMessage,
+		deleteMessage,
 	} = useChat();
 
 	const {
@@ -49,6 +51,24 @@ export default function App() {
 		[sendMessage, params, selectedCharacter],
 	);
 
+	const handleEditMessage = useCallback(
+		(id: string | number, text: string) => {
+			if (selectedCharacter) {
+				editMessage(id, text);
+			}
+		},
+		[editMessage, selectedCharacter],
+	);
+
+	const handleDeleteMessage = useCallback(
+		(id: string | number) => {
+			if (selectedCharacter) {
+				deleteMessage(id);
+			}
+		},
+		[deleteMessage, selectedCharacter],
+	);
+
 	const renderCurrentView = () => {
 		const views = {
 			[VIEW.CHARACTER_EDITOR]: (
@@ -69,10 +89,12 @@ export default function App() {
 				<ChatView
 					messages={messages}
 					onSend={handleSendMessage}
+					onEdit={handleEditMessage}
+					onDelete={handleDeleteMessage}
 				/>
 			),
-		}
-		return views[view]
+		};
+		return views[view];
 	};
 
 	return (

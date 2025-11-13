@@ -147,7 +147,8 @@ export default function useChat() {
 
 					try {
 						const parsed = JSON.parse(jsonStr);
-						const content = parsed.choices?.[0]?.delta?.content || "";
+						const content =
+							parsed.choices?.[0]?.delta?.content || "";
 
 						setMessages((prev) =>
 							prev.map((msg) =>
@@ -165,9 +166,13 @@ export default function useChat() {
 		await processStream();
 	};
 
-	const editMessage = async (id: string, text: string) => {};
+	const editMessage = async (id: string | number, text: string) => {
+		console.log("editMessage called", id, text);
+	};
 
-	const deleteMessage = async (id: string) => {};
+	const deleteMessage = async (id: string | number) => {
+		console.log("deleteMessage called", id);
+	};
 
 	useEffect(() => {
 		loadChats();
@@ -181,5 +186,7 @@ export default function useChat() {
 		deleteChat,
 		loadMessages,
 		sendMessage,
+		editMessage,
+		deleteMessage,
 	};
 }

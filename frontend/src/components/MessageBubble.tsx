@@ -3,8 +3,8 @@ import { Message } from "../types/message";
 
 interface MessageBubbleProps {
 	message: Message;
-	onEdit: (message: Message) => void;
-	onDelete: (message: Message) => void;
+	onEdit: (id: string | number, text: string) => void;
+	onDelete: (id: string | number, text: string) => void;
 }
 
 export default function MessageBubble({
@@ -27,6 +27,7 @@ export default function MessageBubble({
 	const characterName = message.character ? message.character.name : "AI";
 	const avatarUrl = message.character ? message.character.avatarUrl : "";
 	const characterDescription = message.character?.description || "";
+	const messageId = message.id;
 
 	return (
 		<div className="flex items-start gap-3">
@@ -49,8 +50,22 @@ export default function MessageBubble({
 					{message.text}
 				</div>
 				<div className="opacity-0 group-hover:opacity-100 flex gap-1">
-					<button onClick={() => onEdit(message)}>Edit</button>
-					<button onClick={() => onDelete(message)}>Delete</button>
+					{messageId != null && (
+						<>
+							<button
+								onClick={() => onEdit(messageId, message.text)}
+							>
+								Edit
+							</button>
+							<button
+								onClick={() =>
+									onDelete(messageId, message.text)
+								}
+							>
+								Delete
+							</button>
+						</>
+					)}
 				</div>
 			</div>
 		</div>

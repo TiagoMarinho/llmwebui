@@ -2,7 +2,17 @@ import { useRef, useLayoutEffect } from "react";
 import MessageBubble from "./MessageBubble";
 import { Message } from "../types/message";
 
-export default function MessageList({ messages = [] }: { messages: Message[] }) {
+interface MessageListProps {
+	messages: Message[];
+	onEdit: (id: string | number, text: string) => void;
+	onDelete: (id: string | number, text: string) => void;
+}
+
+export default function MessageList({
+	messages,
+	onEdit,
+	onDelete,
+}: MessageListProps) {
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 	const wasAtBottomRef = useRef(true);
 
@@ -23,7 +33,7 @@ export default function MessageList({ messages = [] }: { messages: Message[] }) 
 		const isAtBottom =
 			container.scrollHeight - container.clientHeight <=
 			container.scrollTop + scrollThreshold;
-			
+
 		wasAtBottomRef.current = isAtBottom;
 	};
 
@@ -34,7 +44,12 @@ export default function MessageList({ messages = [] }: { messages: Message[] }) 
 			className="flex-1 overflow-y-auto flex flex-col gap-2.5 mb-4 p-1"
 		>
 			{messages.map((msg, i) => (
-				<MessageBubble key={msg.id || i} message={msg} />
+				<MessageBubble
+					key={msg.id || i}
+					message={msg}
+					onEdit={onEdit}
+					onDelete={onDelete}
+				/>
 			))}
 		</div>
 	);
