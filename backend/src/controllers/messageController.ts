@@ -127,20 +127,62 @@ export const sendMessage = async (req: Request, res: Response) => {
 
 export const updateMessage = async (req: Request, res: Response) => {
 	try {
-		const { chatId, id } = req.params;
-		if (!chatId)
-			return res.status(400).json({ error: "chatId is required" });
+		const { id } = req.params;
+		const chatId = parseInt(req.params.characterId, 10);
+		if (!chatId || !id)
+			return res.status(400).json({ error: "chatId and id is required" });
 
 		const message = await Message.findByPk(id);
 		if (!message)
 			return res.status(404).json({ error: "Message not found" });
 
-		const { text } = req.body;
+		const { text, params, character } = req.body;
 
 		message.text = text;
 		await message.save();
 
-		res.json({ message });
+		if (message.role !== Role.User) return res.json({ message });
+
+		const llmStream = await llmService.sendMessage(text, params, character);
+		res.setHeader("Content-Type", "text/event-stream");
+		res.setHeader("Cache-Control", "no-cache");
+		res.setHeader("Connection", "keep-alive");
+
+		const stream = Readable.fromWeb(llmStream as any);
+		let llmResponseText = "";
+		const decoder = new TextDecoder();
+
+		stream.on("data", (chunk) => {
+			res.write(chunk);
+			llmResponseText += decoder.decode(chunk);
+		});
+
+		stream.on("end", async () => {
+			const cleanText = llmResponseText
+				.split("\n")
+				.filter((line) => line.startsWith("data: "))
+				.map((line) => {
+					const jsonStr = line.replace("data: ", "").trim();
+					if (jsonStr === "[DONE]") return null;
+					try {
+						return JSON.parse(jsonStr).choices[0].delta.content;
+					} catch {
+						return null;
+					}
+				})
+				.filter(Boolean)
+				.join("");
+
+			if (cleanText) {
+				await Message.create({
+					text: cleanText,
+					role: Role.Assistant,
+					characterId: character.id,
+					chatId,
+				});
+			}
+			res.end();
+		});
 	} catch (err) {
 		res.status(500).json({ error: getErrorMessage(err) });
 	}
