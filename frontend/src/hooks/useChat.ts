@@ -167,11 +167,50 @@ export default function useChat() {
 	};
 
 	const editMessage = async (id: string | number, text: string) => {
-		console.log("editMessage called", id, text);
+		if (!text) return;
+		try {
+			const currentChatId = chatId ?? (await createChat());
+			const res = await fetch(
+				`/api/v1/chats/${currentChatId}/messages/${id}`,
+				{
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ text }),
+				},
+			);
+
+			if (!res.ok) throw new Error("Failed to edit message");
+
+			const updatedMessages = messages.map((m) =>
+				m.id === id ? { ...m, text } : m,
+			);
+			setMessages(updatedMessages);
+		} catch (err) {
+			console.error("Failed to edit message:", err);
+		}
 	};
 
 	const deleteMessage = async (id: string | number) => {
-		console.log("deleteMessage called", id);
+		if (!id) return;
+		if (confirm("Are you sure you want to delete this message?")) {
+			try {
+				const currentChatId = chatId ?? (await createChat());
+				const res = await fetch(
+					`/api/v1/chats/${currentChatId}/messages/${id}/`,
+					{
+						method: "DELETE",
+					},
+				);
+
+				if (!res.ok) throw new Error("Failed to delete message");
+				alert("Message deleted successfully");
+
+				const updatedMessages = messages.filter((m) => m.id !== id);
+				setMessages(updatedMessages);
+			} catch (err) {
+				console.error("Failed to delete message:", err);
+			}
+		}
 	};
 
 	useEffect(() => {
