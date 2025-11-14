@@ -170,6 +170,7 @@ export default function useChat() {
 		if (!text) return;
 		try {
 			const currentChatId = chatId ?? (await createChat());
+			const character = messages.find((m) => m.id === id)?.character;
 			const res = await fetch(
 				`/api/v1/chats/${currentChatId}/messages/${id}`,
 				{
@@ -179,12 +180,68 @@ export default function useChat() {
 				},
 			);
 
-			if (!res.ok) throw new Error("Failed to edit message");
+			if (!res.body) throw new Error("Failed to edit message");
 
 			const updatedMessages = messages.map((m) =>
 				m.id === id ? { ...m, text } : m,
 			);
 			setMessages(updatedMessages);
+
+			if (!res.body) return;
+			if (!res.headers.get("Content-Type")) return;
+
+			const reader = res.body.getReader();
+			const decoder = new TextDecoder();
+
+			const assistantMessage: Message = {
+				id: crypto.randomUUID(),
+				role: Role.Assistant,
+				text: "",
+				character,
+			};
+			setMessages((prev) => [...prev, assistantMessage]);
+
+			let buffer = "";
+			const processStream = async () => {
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) {
+						await loadChats();
+						break;
+					}
+
+					buffer += decoder.decode(value, { stream: true });
+					const lines = buffer.split("\n");
+					buffer = lines.pop() || "";
+
+					for (const line of lines) {
+						if (!line.startsWith("data: ")) continue;
+
+						const jsonStr = line.substring(5).trim();
+						if (jsonStr === "[DONE]") continue;
+
+						try {
+							const parsed = JSON.parse(jsonStr);
+							const content =
+								parsed.choices?.[0]?.delta?.content || "";
+
+							setMessages((prev) =>
+								prev.map((msg) =>
+									msg.id === assistantMessage.id
+										? { ...msg, text: msg.text + content }
+										: msg,
+								),
+							);
+						} catch (error) {
+							console.error(
+								"Failed to parse stream chunk:",
+								error,
+							);
+						}
+					}
+				}
+			};
+			await processStream();
 		} catch (err) {
 			console.error("Failed to edit message:", err);
 		}
