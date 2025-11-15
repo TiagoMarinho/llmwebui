@@ -106,12 +106,7 @@ export const updateMessage = async (req: Request, res: Response) => {
 		message.text = text;
 		await message.save();
 
-		if (message.role !== Role.User) {
-			console.log("Detected assistant role, skipping LLM call");
-			return res.json({ message });
-		}
-
-		console.log("Detected user role, calling LLM");
+		if (message.role !== Role.User) return res.json({ message });
 
 		const llmStream = await llmService.sendMessage(text, params, character);
 		if (!llmStream)
