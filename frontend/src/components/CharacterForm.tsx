@@ -14,10 +14,11 @@ export default function CharacterForm({
 	formData,
 	onFormChange,
 }: CharacterFormProps) {
-	const inputBaseClasses = "w-full mt-1 p-2 bg-input border border-border rounded-lg";
+	const inputBaseClasses =
+		"w-full mt-1 p-2 bg-input border border-border rounded-lg";
 
 	return (
-		<div className="flex-1 border border-border mb-4 p-4 bg-[#16161f] rounded-xl overflow-y-auto">
+		<div className="flex-1 border border-border mb-4 p-4 rounded-xl overflow-y-auto">
 			<label className="block mb-3">
 				Name:
 				<input
