@@ -54,10 +54,10 @@ export default function App() {
 	const handleEditMessage = useCallback(
 		(id: string | number, text: string) => {
 			if (selectedCharacter) {
-				editMessage(id, text);
+				editMessage(id, text, params, selectedCharacter);
 			}
 		},
-		[editMessage, selectedCharacter],
+		[editMessage, params, selectedCharacter],
 	);
 
 	const handleDeleteMessage = useCallback(
