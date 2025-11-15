@@ -7,6 +7,7 @@ import { getErrorMessage } from "../utils/getErrorMessage.ts";
 import { Role } from "../types/Role.ts";
 import Character from "../models/Character.ts";
 import { Readable } from "stream";
+import handleLLMStream from "../utils/handleLLMStream.ts";
 
 export const getMessages = async (
 	req: Request<MessageAttributes>,
@@ -80,46 +81,10 @@ export const sendMessage = async (req: Request, res: Response) => {
 		await Chat.update({}, { where: { id: chatId }, silent: false });
 
 		const llmStream = await llmService.sendMessage(text, params, character);
+		if (!llmStream)
+			return res.status(500).json({ error: "LLM Unavailable" });
 
-		res.setHeader("Content-Type", "text/event-stream");
-		res.setHeader("Cache-Control", "no-cache");
-		res.setHeader("Connection", "keep-alive");
-
-		const stream = Readable.fromWeb(llmStream as any);
-		let llmResponseText = "";
-		const decoder = new TextDecoder();
-
-		stream.on("data", (chunk) => {
-			res.write(chunk);
-			llmResponseText += decoder.decode(chunk);
-		});
-
-		stream.on("end", async () => {
-			const cleanText = llmResponseText
-				.split("\n")
-				.filter((line) => line.startsWith("data: "))
-				.map((line) => {
-					const jsonStr = line.replace("data: ", "").trim();
-					if (jsonStr === "[DONE]") return null;
-					try {
-						return JSON.parse(jsonStr).choices[0].delta.content;
-					} catch {
-						return null;
-					}
-				})
-				.filter(Boolean)
-				.join("");
-
-			if (cleanText) {
-				await Message.create({
-					text: cleanText,
-					role: Role.Assistant,
-					characterId: character.id,
-					chatId,
-				});
-			}
-			res.end();
-		});
+		await handleLLMStream(res, llmStream, chatId, character.id);
 	} catch (err) {
 		res.status(500).json({ error: getErrorMessage(err) });
 	}
@@ -128,7 +93,7 @@ export const sendMessage = async (req: Request, res: Response) => {
 export const updateMessage = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
-		const chatId = parseInt(req.params.characterId, 10);
+		const chatId = parseInt(req.params.chatId, 10);
 		if (!chatId || !id)
 			return res.status(400).json({ error: "chatId and id is required" });
 
@@ -141,48 +106,18 @@ export const updateMessage = async (req: Request, res: Response) => {
 		message.text = text;
 		await message.save();
 
-		if (message.role !== Role.User) return res.json({ message });
+		if (message.role !== Role.User) {
+			console.log("Detected assistant role, skipping LLM call");
+			return res.json({ message });
+		}
+
+		console.log("Detected user role, calling LLM");
 
 		const llmStream = await llmService.sendMessage(text, params, character);
-		res.setHeader("Content-Type", "text/event-stream");
-		res.setHeader("Cache-Control", "no-cache");
-		res.setHeader("Connection", "keep-alive");
+		if (!llmStream)
+			return res.status(500).json({ error: "LLM Unavailable" });
 
-		const stream = Readable.fromWeb(llmStream as any);
-		let llmResponseText = "";
-		const decoder = new TextDecoder();
-
-		stream.on("data", (chunk) => {
-			res.write(chunk);
-			llmResponseText += decoder.decode(chunk);
-		});
-
-		stream.on("end", async () => {
-			const cleanText = llmResponseText
-				.split("\n")
-				.filter((line) => line.startsWith("data: "))
-				.map((line) => {
-					const jsonStr = line.replace("data: ", "").trim();
-					if (jsonStr === "[DONE]") return null;
-					try {
-						return JSON.parse(jsonStr).choices[0].delta.content;
-					} catch {
-						return null;
-					}
-				})
-				.filter(Boolean)
-				.join("");
-
-			if (cleanText) {
-				await Message.create({
-					text: cleanText,
-					role: Role.Assistant,
-					characterId: character.id,
-					chatId,
-				});
-			}
-			res.end();
-		});
+		await handleLLMStream(res, llmStream, chatId, character.id);
 	} catch (err) {
 		res.status(500).json({ error: getErrorMessage(err) });
 	}
