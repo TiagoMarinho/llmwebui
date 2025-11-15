@@ -55,13 +55,13 @@ export default function CharacterCreator({
 				<button
 					type="button"
 					onClick={() => setView(VIEW.CHAT)}
-					className="px-5 py-2.5 rounded-xl bg-gray-600 text-white border-none cursor-pointer font-medium transition-all duration-250 hover:bg-gray-500 hover:-translate-y-px"
+					className="px-5 py-2.5 rounded-xl bg-gray-600 border-none cursor-pointer font-medium transition-all duration-250 hover:bg-gray-500 hover:-translate-y-px"
 				>
 					Cancel
 				</button>
 				<button
 					type="submit"
-					className="px-5 py-2.5 rounded-xl bg-accent text-bg border-none cursor-pointer font-medium transition-all duration-250 hover:bg-[#c299ff] hover:-translate-y-px"
+					className="px-5 py-2.5 rounded-xl bg-accent border-none cursor-pointer font-medium transition-all duration-250 hover:bg-[#c299ff] hover:-translate-y-px"
 				>
 					Create Character
 				</button>

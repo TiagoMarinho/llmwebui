@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { VIEW } from "../shared/view";
 import { Character } from "../types/character";
 import CharacterForm from "./CharacterForm";
+import { ChevronLeft } from "lucide-react";
 
 type UpdateCharacterFunc = (characterData: Character) => void;
 type DeleteCharacterFunc = (id: number) => void;
@@ -59,7 +60,9 @@ export default function CharacterEditor({
 	const handleDelete = () => {
 		if (
 			selectedCharacter &&
-			window.confirm(`Are you sure you want to delete ${selectedCharacter.name}?`)
+			window.confirm(
+				`Are you sure you want to delete ${selectedCharacter.name}?`,
+			)
 		) {
 			deleteCharacter(selectedCharacter.id);
 			setView(VIEW.CHAT);
@@ -74,7 +77,7 @@ export default function CharacterEditor({
 					onClick={() => setView(VIEW.CHAT)}
 					className="mt-4 px-5 py-2.5 rounded-xl bg-accent text-bg border-none cursor-pointer font-medium transition-all duration-250 hover:bg-[#c299ff] hover:-translate-y-px"
 				>
-					← Back to Chat
+					<ChevronLeft size={16} /> Back to Chat
 				</button>
 			</div>
 		);
