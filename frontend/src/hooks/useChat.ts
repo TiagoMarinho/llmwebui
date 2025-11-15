@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Message } from "../types/message";
 import { Role } from "../types/role";
 import { Settings } from "./useSettings";
@@ -36,7 +36,6 @@ export default function useChat() {
 		const createData = await createRes.json();
 		const newChat = createData.chat;
 		const newChatId = newChat.id;
-
 
 		const finalTitle = `Chat #${newChatId}`;
 		await fetch(`/api/v1/chats/${newChatId}`, {
@@ -117,7 +116,6 @@ export default function useChat() {
 
 		if (!res.body) return;
 		const reader = res.body.getReader();
-		const decoder = new TextDecoder();
 
 		const assistantMessage: Message = {
 			id: crypto.randomUUID(),
@@ -126,44 +124,87 @@ export default function useChat() {
 			character,
 		};
 		setMessages((prev) => [...prev, assistantMessage]);
+		await processStream(
+			reader,
+			assistantMessage.id as string,
+			setMessages,
+			loadChats,
+		);
+	};
 
-		let buffer = "";
-		const processStream = async () => {
-			while (true) {
-				const { done, value } = await reader.read();
-				if (done) {
-					await loadChats();
-					break;
-				}
+	const editMessage = async (
+		id: string | number,
+		text: string,
+		params: Settings,
+		character: Character,
+	) => {
+		if (!text) return;
+		try {
+			const currentChatId = chatId ?? (await createChat());
 
-				buffer += decoder.decode(value, { stream: true });
-				const lines = buffer.split("\n");
-				buffer = lines.pop() || "";
+			const res = await fetch(
+				`/api/v1/chats/${currentChatId}/messages/${id}`,
+				{
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						text,
+						params,
+						character,
+					}),
+				},
+			);
 
-				for (const line of lines) {
-					if (!line.startsWith("data: ")) continue;
+			if (!res.body) throw new Error("Failed to edit message");
 
-					const jsonStr = line.substring(5).trim();
-					if (jsonStr === "[DONE]") continue;
+			const updatedMessages = messages.map((m) =>
+				m.id === id ? { ...m, text } : m,
+			);
+			setMessages(updatedMessages);
 
-					try {
-						const parsed = JSON.parse(jsonStr);
-						const content = parsed.choices?.[0]?.delta?.content || "";
+			if (!res.body) return;
+			if (!res.headers.get("Content-Type")) return;
 
-						setMessages((prev) =>
-							prev.map((msg) =>
-								msg.id === assistantMessage.id
-									? { ...msg, text: msg.text + content }
-									: msg,
-							),
-						);
-					} catch (error) {
-						console.error("Failed to parse stream chunk:", error);
-					}
-				}
+			const reader = res.body.getReader();
+
+			const assistantMessage: Message = {
+				id: crypto.randomUUID(),
+				role: Role.Assistant,
+				text: "",
+				character,
+			};
+			setMessages((prev) => [...prev, assistantMessage]);
+			await processStream(
+				reader,
+				assistantMessage.id as string,
+				setMessages,
+				loadChats,
+			);
+		} catch (err) {
+			console.error("Failed to edit message:", err);
+		}
+	};
+
+	const deleteMessage = async (id: string | number) => {
+		if (!id) return;
+		if (confirm("Are you sure you want to delete this message?")) {
+			try {
+				const currentChatId = chatId ?? (await createChat());
+				const res = await fetch(
+					`/api/v1/chats/${currentChatId}/messages/${id}/`,
+					{
+						method: "DELETE",
+					},
+				);
+
+				if (!res.ok) throw new Error("Failed to delete message");
+
+				const updatedMessages = messages.filter((m) => m.id !== id);
+				setMessages(updatedMessages);
+			} catch (err) {
+				console.error("Failed to delete message:", err);
 			}
-		};
-		await processStream();
+		}
 	};
 
 	useEffect(() => {
@@ -178,5 +219,51 @@ export default function useChat() {
 		deleteChat,
 		loadMessages,
 		sendMessage,
+		editMessage,
+		deleteMessage,
 	};
 }
+
+const processStream = async (
+	reader: ReadableStreamDefaultReader<Uint8Array>,
+	assistantMessageId: string,
+	setMessages: Dispatch<SetStateAction<Message[]>>,
+	onComplete: () => Promise<void>,
+) => {
+	const decoder = new TextDecoder();
+	let buffer = "";
+
+	while (true) {
+		const { done, value } = await reader.read();
+		if (done) {
+			await onComplete();
+			break;
+		}
+
+		buffer += decoder.decode(value, { stream: true });
+		const lines = buffer.split("\n");
+		buffer = lines.pop() || "";
+
+		for (const line of lines) {
+			if (!line.startsWith("data: ")) continue;
+
+			const jsonStr = line.substring(5).trim();
+			if (jsonStr === "[DONE]") continue;
+
+			try {
+				const parsed = JSON.parse(jsonStr);
+				const content = parsed.choices?.[0]?.delta?.content || "";
+
+				setMessages((prev) =>
+					prev.map((msg) =>
+						msg.id === assistantMessageId
+							? { ...msg, text: msg.text + content }
+							: msg,
+					),
+				);
+			} catch (error) {
+				console.error("Failed to parse stream chunk:", error);
+			}
+		}
+	}
+};
