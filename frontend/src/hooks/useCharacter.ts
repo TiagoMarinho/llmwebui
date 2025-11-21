@@ -3,9 +3,8 @@ import { Character } from "../types/character";
 
 export default function useCharacter() {
 	const [characters, setCharacters] = useState<Character[]>([]);
-	const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
-		null,
-	);
+	const [selectedCharacter, setSelectedCharacter] =
+		useState<Character | null>(null);
 
 	const loadCharacters = async () => {
 		try {
@@ -34,8 +33,6 @@ export default function useCharacter() {
 		}
 	};
 
-
-
 	useEffect(() => {
 		loadCharacters();
 	}, []);
@@ -48,7 +45,7 @@ export default function useCharacter() {
 	};
 
 	const createCharacter = async (
-		characterData: Omit<Character, "id">,
+		characterData: Omit<Character, "id"> | FormData,
 	) => {
 		try {
 			const res = await fetch("/api/v1/characters", {
@@ -59,7 +56,9 @@ export default function useCharacter() {
 
 			if (!res.ok) {
 				const errorData = await res.json();
-				throw new Error(errorData.error || "Failed to create character");
+				throw new Error(
+					errorData.error || "Failed to create character",
+				);
 			}
 
 			const data = (await res.json()) as { character: Character };
@@ -67,9 +66,10 @@ export default function useCharacter() {
 
 			setCharacters((prev) => [...prev, newCharacter]);
 			setSelectedCharacter(newCharacter);
-
 		} catch (err) {
-			alert(`Error: ${err instanceof Error ? err.message : "Unknown error"}`);
+			alert(
+				`Error: ${err instanceof Error ? err.message : "Unknown error"}`,
+			);
 		}
 	};
 
@@ -83,7 +83,9 @@ export default function useCharacter() {
 
 			if (!res.ok) {
 				const errorData = await res.json();
-				throw new Error(errorData.error || "Failed to update character");
+				throw new Error(
+					errorData.error || "Failed to update character",
+				);
 			}
 			const data = (await res.json()) as { character: Character };
 			const updatedCharacter = data.character;
@@ -97,7 +99,9 @@ export default function useCharacter() {
 				setSelectedCharacter(updatedCharacter);
 			}
 		} catch (err) {
-			alert(`Error: ${err instanceof Error ? err.message : "Unknown error"}`);
+			alert(
+				`Error: ${err instanceof Error ? err.message : "Unknown error"}`,
+			);
 		}
 	};
 
