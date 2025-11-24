@@ -42,8 +42,9 @@ export const createCharacter = async (req: Request, res: Response) => {
 			return res.status(400).json({ error: "Name is required" });
 		}
 
+		const baseUrl = `${req.protocol}://${req.get("host")}`;
 		const avatarPath = req.file
-			? `/uploads/avatars/${req.file.filename}`
+			? `${baseUrl}/uploads/avatars/${req.file.filename}`
 			: avatarUrl || null;
 
 		const character = await Character.create({
@@ -61,9 +62,11 @@ export const createCharacter = async (req: Request, res: Response) => {
 export const updateCharacter = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
-		const { id: _id, ...characterData } = req.body;
+		let characterData = req.body;
 
-		const character = await Character.findByPk(id);
+		const charId = characterData.id || id;
+
+		const character = await Character.findByPk(charId);
 		if (!character)
 			return res.status(404).json({ error: "Character not found" });
 
@@ -88,7 +91,8 @@ export const updateCharacter = async (req: Request, res: Response) => {
 				}
 			}
 
-			character.avatarUrl = `/uploads/avatars/${req.file.filename}`;
+			const baseUrl = `${req.protocol}://${req.get("host")}`;
+			character.avatarUrl = `${baseUrl}/uploads/avatars/${req.file.filename}`;
 		} else if (characterData.avatarUrl !== undefined) {
 			character.avatarUrl = characterData.avatarUrl?.trim() || null;
 		}
@@ -96,7 +100,7 @@ export const updateCharacter = async (req: Request, res: Response) => {
 		character.description = characterData?.description?.trim() ?? null;
 		character.story = characterData?.story?.trim() ?? null;
 
-		await character.update(characterData);
+		await character.save();
 		res.json({ character });
 	} catch (err) {
 		res.status(500).json({ error: getErrorMessage(err) });

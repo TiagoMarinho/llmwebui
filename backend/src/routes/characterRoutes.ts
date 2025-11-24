@@ -14,6 +14,6 @@ router.get("/", getCharacters);
 router.get("/:id", getCharacterById);
 router.post("/", upload.single("avatar"), createCharacter);
 router.delete("/:id", deleteCharacter);
-router.put("/:id", updateCharacter);
+router.put("/:id", upload.single("avatar"), updateCharacter);
 
 export default router;
