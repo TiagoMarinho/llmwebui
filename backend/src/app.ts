@@ -8,6 +8,7 @@ const app = express();
 
 app.use(express.json());
 
+app.use("/uploads", express.static("uploads"));
 app.use("/api/v1/characters", characterRoutes);
 app.use("/api/v1/chats", chatRoutes);
 app.use("/api/v1/chats", messageRoutes);
