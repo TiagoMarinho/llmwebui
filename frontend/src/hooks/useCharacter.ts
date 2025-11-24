@@ -48,11 +48,21 @@ export default function useCharacter() {
 		characterData: Omit<Character, "id"> | FormData,
 	) => {
 		try {
-			const res = await fetch("/api/v1/characters", {
+			const isFormData = characterData instanceof FormData;
+			const body = isFormData
+				? characterData
+				: JSON.stringify(characterData);
+
+			const init: RequestInit = {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(characterData),
-			});
+				body,
+			};
+
+			if (!isFormData) {
+				init.headers = { "Content-Type": "application/json" };
+			}
+
+			const res = await fetch("/api/v1/characters", init);
 
 			if (!res.ok) {
 				const errorData = await res.json();
@@ -73,13 +83,26 @@ export default function useCharacter() {
 		}
 	};
 
-	const updateCharacter = async (characterData: Character) => {
+	const updateCharacter = async (characterData: Character | FormData) => {
 		try {
-			const res = await fetch(`/api/v1/characters/${characterData.id}`, {
+			const isFormData = characterData instanceof FormData;
+			const id = isFormData
+				? characterData.get("id")
+				: (characterData as Character).id;
+			const body = isFormData
+				? characterData
+				: JSON.stringify(characterData);
+
+			const init: RequestInit = {
 				method: "PUT",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(characterData),
-			});
+				body,
+			};
+
+			if (!isFormData) {
+				init.headers = { "Content-Type": "application/json" };
+			}
+
+			const res = await fetch(`/api/v1/characters/${id}`, init);
 
 			if (!res.ok) {
 				const errorData = await res.json();
