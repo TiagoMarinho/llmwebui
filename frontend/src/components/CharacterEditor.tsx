@@ -53,6 +53,7 @@ export default function CharacterEditor({
 		if (!selectedCharacter) return;
 		const data = new FormData();
 
+		data.append("id", selectedCharacter.id.toString());
 		data.append("name", formData.name.trim());
 		data.append("description", formData.description || "");
 		data.append("story", formData.story || "");
@@ -60,10 +61,7 @@ export default function CharacterEditor({
 		if (avatarFile) data.append("avatar", avatarFile);
 		if (formData.avatarUrl) data.append("avatarUrl", formData.avatarUrl);
 
-		updateCharacter({
-			id: selectedCharacter.id,
-			...data,
-		});
+		updateCharacter(data);
 
 		setView(VIEW.CHAT);
 	};
