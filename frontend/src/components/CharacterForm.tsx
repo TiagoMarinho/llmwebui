@@ -100,6 +100,7 @@ export default function CharacterForm({
 					onDragOver={handleDragOver}
 					onDragLeave={handleDragLeave}
 					onDrop={handleDrop}
+					onPaste={handlePaste}
 					className={`mt-2 border-2 border-dashed rounded-lg p-4 text-center ${isDragging ? "border-blue-500 bg-blue-50" : "border-border"}`}
 				>
 					{previewUrl && (
