@@ -64,6 +64,7 @@ export default class Message
 			{
 				sequelize,
 				modelName: "Message",
+				paranoid: true,
 				tableName: "messages",
 				timestamps: true,
 			},
